@@ -1,1 +1,6 @@
-module.exports={eslint:{ignoreDuringBuilds:true},poweredByHeader:false};
+module.exports = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  poweredByHeader: false,
+};
