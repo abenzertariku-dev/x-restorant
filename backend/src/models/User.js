@@ -32,11 +32,10 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash PIN before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('pin')) return next();
+userSchema.pre('save', async function () {
+  if (!this.isModified('pin')) return;
   const salt = await bcrypt.genSalt(10);
   this.pin = await bcrypt.hash(this.pin, salt);
-  next();
 });
 
 // Compare PIN helper
