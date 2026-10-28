@@ -30,34 +30,53 @@ const sendTokenResponse = (user, statusCode, res) => {
     });
 };
 
-// @desc    Staff Login with 4-digit PIN
+// @desc    Staff Login with Username & Password (or PIN)
 // @route   POST /api/auth/login
 // @access  Public
 export const login = async (req, res) => {
   try {
-    const { pin, role } = req.body;
+    const { username, password, pin, role } = req.body;
+    const credential = password || pin;
 
-    if (!pin) {
-      return res.status(400).json({ success: false, error: 'Please enter your 4-digit PIN' });
+    if (!credential) {
+      return res.status(400).json({ success: false, error: 'Please enter your password / PIN' });
     }
 
-    const query = { active: true };
-    if (role) query.role = role;
-
-    // Find users matching role (or all users if role not specified)
-    const users = await User.find(query);
-
     let matchedUser = null;
-    for (const u of users) {
-      const isMatch = await u.matchPin(pin);
-      if (isMatch) {
-        matchedUser = u;
-        break;
+
+    if (username) {
+      // Find by username, name, or phone
+      const cleanUser = String(username).trim();
+      const user = await User.findOne({
+        $or: [
+          { username: cleanUser.toLowerCase() },
+          { name: new RegExp('^' + cleanUser + '$', 'i') },
+          { phone: cleanUser },
+        ],
+        active: true,
+      });
+
+      if (user) {
+        const isMatch = await user.matchPin(credential);
+        if (isMatch) matchedUser = user;
+      }
+    } else {
+      // Fallback search by PIN
+      const query = { active: true };
+      if (role) query.role = role;
+      const users = await User.find(query);
+
+      for (const u of users) {
+        const isMatch = await u.matchPin(credential);
+        if (isMatch) {
+          matchedUser = u;
+          break;
+        }
       }
     }
 
     if (!matchedUser) {
-      return res.status(401).json({ success: false, error: 'Incorrect PIN' });
+      return res.status(401).json({ success: false, error: 'Invalid username or password' });
     }
 
     sendTokenResponse(matchedUser, 200, res);

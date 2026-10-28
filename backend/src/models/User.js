@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please provide a name'],
       trim: true,
     },
+    username: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
     role: {
       type: String,
       enum: ['admin', 'manager', 'waiter', 'kitchen', 'cashier', 'driver'],

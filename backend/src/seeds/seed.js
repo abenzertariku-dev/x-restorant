@@ -32,14 +32,14 @@ const seedData = async () => {
 
   // 2. Create Staff Users
   const users = await User.create([
-    { name: 'Abebe (Admin)', role: 'admin', pin: '2222', phone: '+251911000001' },
-    { name: 'Selam (Manager)', role: 'manager', pin: '9999', phone: '+251911000002' },
-    { name: 'Dawit (Waiter)', role: 'waiter', pin: '1111', phone: '+251911000003' },
-    { name: 'Chef Almaz (Kitchen)', role: 'kitchen', pin: '4444', phone: '+251911000004' },
-    { name: 'Hanna (Cashier)', role: 'cashier', pin: '5555', phone: '+251911000005' },
-    { name: 'Kassahun (Driver)', role: 'driver', pin: '3333', phone: '+251911000006' },
+    { name: 'Abebe (Admin)', username: 'admin', role: 'admin', pin: '2222', phone: '+251911000001' },
+    { name: 'Selam (Manager)', username: 'manager', role: 'manager', pin: '9999', phone: '+251911000002' },
+    { name: 'Dawit (Waiter)', username: 'waiter', role: 'waiter', pin: '1111', phone: '+251911000003' },
+    { name: 'Chef Almaz (Kitchen)', username: 'kitchen', role: 'kitchen', pin: '4444', phone: '+251911000004' },
+    { name: 'Hanna (Cashier)', username: 'cashier', role: 'cashier', pin: '5555', phone: '+251911000005' },
+    { name: 'Kassahun (Driver)', username: 'driver', role: 'driver', pin: '3333', phone: '+251911000006' },
   ]);
-  console.log(`👤 Created ${users.length} staff accounts with PINs: Admin=2222, Waiter=1111, Kitchen=4444, Cashier=5555, Driver=3333`);
+  console.log(`👤 Created ${users.length} staff accounts with Usernames: admin, waiter, kitchen, cashier, driver (Password: 2222, 1111, 4444, 5555, 3333)`);
 
   // 3. Create Categories
   const catTraditional = await Category.create({
