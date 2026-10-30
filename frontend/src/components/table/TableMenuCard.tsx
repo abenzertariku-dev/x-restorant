@@ -4,31 +4,60 @@ import React from 'react';
 import { MenuItem } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Minus } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Minus, Flame, Leaf } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
+import { formatETB } from '@/lib/format';
 
 interface TableMenuCardProps {
   item: MenuItem;
   quantity: number;
   onUpdateQuantity: (delta: number) => void;
-  getText: (field: any) => string;
 }
 
-export function TableMenuCard({ item, quantity, onUpdateQuantity, getText }: TableMenuCardProps) {
+export function TableMenuCard({ item, quantity, onUpdateQuantity }: TableMenuCardProps) {
+  const { t, getText } = useLanguage();
+
   return (
-    <Card className="border-white/5 bg-[#171821] hover:border-[#F59E0B]/40 hover:bg-[#1A1C26] transition shadow-sm">
-      <CardContent className="p-4 flex items-center justify-between gap-3">
+    <Card className="border-white/5 bg-[#171821] shadow-sm transition hover:border-[#F59E0B]/40 hover:bg-[#1A1C26]">
+      <CardContent className="flex items-center justify-between gap-3 p-4">
         <div className="min-w-0 flex-1">
-          <h3 className="font-bold text-[#F8FAFC] text-sm">{getText(item.name)}</h3>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <h3 className="text-sm font-bold text-[#F8FAFC]">{getText(item.name)}</h3>
+            {item.isFasting && (
+              <Badge variant="success" className="gap-0.5 px-1.5 py-0 text-[9px]">
+                <Leaf className="h-2.5 w-2.5" /> {t('fasting')}
+              </Badge>
+            )}
+            {item.spiceLevel && item.spiceLevel !== 'None' && (
+              <Badge variant="destructive" className="gap-0.5 px-1.5 py-0 text-[9px]">
+                <Flame className="h-2.5 w-2.5" /> {item.spiceLevel}
+              </Badge>
+            )}
+          </div>
           {item.description && (
-            <p className="line-clamp-1 text-xs text-[#94A3B8] mt-0.5">{getText(item.description)}</p>
+            <p className="mt-0.5 line-clamp-2 text-xs text-[#94A3B8]">
+              {getText(item.description)}
+            </p>
           )}
-          <span className="mt-1.5 inline-block font-mono text-xs font-black text-[#F59E0B]">
-            {item.price} ETB
-          </span>
+          <div className="mt-1.5 flex items-center gap-2">
+            <span className="inline-block font-mono text-xs font-black text-[#F59E0B]">
+              {formatETB(item.price)}
+            </span>
+            {!item.isAvailable && (
+              <span className="text-[10px] font-bold uppercase text-rose-400">
+                {t('outOfStock')}
+              </span>
+            )}
+          </div>
         </div>
 
-        {quantity > 0 ? (
-          <div className="flex items-center gap-1.5 rounded-full border border-[#F59E0B]/40 bg-[#F59E0B]/15 p-1">
+        {!item.isAvailable ? (
+          <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+            {t('outOfStock')}
+          </span>
+        ) : quantity > 0 ? (
+          <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#F59E0B]/40 bg-[#F59E0B]/15 p-1">
             <Button
               type="button"
               size="icon"
@@ -38,9 +67,7 @@ export function TableMenuCard({ item, quantity, onUpdateQuantity, getText }: Tab
             >
               <Minus className="h-3 w-3" />
             </Button>
-            <span className="w-5 text-center text-xs font-black text-[#F59E0B]">
-              {quantity}
-            </span>
+            <span className="w-5 text-center text-xs font-black text-[#F59E0B]">{quantity}</span>
             <Button
               type="button"
               size="icon"
@@ -55,9 +82,9 @@ export function TableMenuCard({ item, quantity, onUpdateQuantity, getText }: Tab
             type="button"
             size="sm"
             onClick={() => onUpdateQuantity(1)}
-            className="rounded-full bg-[#F59E0B] px-4 font-black uppercase text-[#0F1015] hover:bg-[#D97706] hover:text-[#FFFFFF]"
+            className="shrink-0 rounded-full bg-[#F59E0B] px-4 font-black uppercase text-[#0F1015] hover:bg-[#D97706]"
           >
-            Add
+            <Plus className="mr-1 h-3.5 w-3.5" /> {t('add')}
           </Button>
         )}
       </CardContent>

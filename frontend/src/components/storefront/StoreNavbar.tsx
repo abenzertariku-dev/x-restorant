@@ -3,9 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Category, RestaurantSetting } from '@/types';
-import { UtensilsCrossed, Globe, ShoppingBag, Lock } from 'lucide-react';
+import { BilingualText, Category, RestaurantSetting } from '@/types';
+import { UtensilsCrossed, Globe, ShoppingBag } from 'lucide-react';
 
 interface StoreNavbarProps {
   settings: RestaurantSetting | null;
@@ -18,7 +17,7 @@ interface StoreNavbarProps {
   onToggleFasting: () => void;
   onToggleLanguage: () => void;
   onOpenCheckout: () => void;
-  getText: (field: any) => string;
+  getText: (field?: Partial<BilingualText> | null) => string;
 }
 
 export function StoreNavbar({
@@ -120,18 +119,6 @@ export function StoreNavbar({
               </span>
             </Button>
           )}
-
-          <Link href="/login">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="border-white/10 bg-[#1A1B24] text-xs font-bold text-[#CBD5E1] hover:border-[#F59E0B] hover:text-[#F8FAFC]"
-            >
-              <Lock className="mr-1.5 h-3.5 w-3.5 text-[#F59E0B]" />
-              <span className="hidden sm:inline">Staff Portal</span>
-            </Button>
-          </Link>
         </div>
       </div>
     </header>

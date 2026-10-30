@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useAuth, roleHome } from '@/context/AuthContext';
 import {
   User,
   Lock,
@@ -23,7 +24,12 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const { login } = useAuth();
+  const { login, user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) router.replace(roleHome(user.role));
+  }, [loading, user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,8 +42,8 @@ export default function LoginPage() {
     setError('');
     try {
       await login({ username: username.trim(), password: password.trim() });
-    } catch (err: any) {
-      setError(err.message || 'Access Denied: Invalid credentials');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Access Denied: Invalid credentials');
     } finally {
       setBusy(false);
     }

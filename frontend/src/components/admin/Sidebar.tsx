@@ -52,6 +52,7 @@ export function Sidebar({
   ];
 
   const stationLinks = [
+    { href: '/manager', label: 'Manager Floor', icon: LayoutDashboard, color: 'text-[#F59E0B]', bg: 'bg-[#F59E0B]/10' },
     { href: '/kitchen', label: 'Kitchen KDS', icon: ChefHat, color: 'text-[#F59E0B]', bg: 'bg-orange-500/10' },
     { href: '/waiter', label: 'Waiter Station', icon: UtensilsCrossed, color: 'text-[#F59E0B]', bg: 'bg-amber-500/10' },
     { href: '/cashier', label: 'Cashier POS', icon: CreditCard, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },

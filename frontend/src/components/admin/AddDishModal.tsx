@@ -11,38 +11,18 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Category } from '@/types';
+import { Category, DishForm } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 
 interface AddDishModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   categories: Category[];
-  itemForm: {
-    nameEn: string;
-    nameAm: string;
-    descEn: string;
-    descAm: string;
-    price: string;
-    categoryId: string;
-    spiceLevel: string;
-    isFasting: boolean;
-    imageUrl: string;
-  };
-  setItemForm: React.Dispatch<
-    React.SetStateAction<{
-      nameEn: string;
-      nameAm: string;
-      descEn: string;
-      descAm: string;
-      price: string;
-      categoryId: string;
-      spiceLevel: string;
-      isFasting: boolean;
-      imageUrl: string;
-    }>
-  >;
+  itemForm: DishForm;
+  setItemForm: React.Dispatch<React.SetStateAction<DishForm>>;
   onSubmit: (e: React.FormEvent) => void;
+  editing?: boolean;
+  busy?: boolean;
 }
 
 export function AddDishModal({
@@ -52,30 +32,30 @@ export function AddDishModal({
   itemForm,
   setItemForm,
   onSubmit,
+  editing = false,
+  busy = false,
 }: AddDishModalProps) {
   const { getText } = useLanguage();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent onClose={() => onOpenChange(false)}>
+      <DialogContent onClose={() => onOpenChange(false)} className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Dish</DialogTitle>
+          <DialogTitle>{editing ? 'Edit Dish' : 'Add New Dish'}</DialogTitle>
           <DialogDescription>
-            Create a dish item in your restaurant catalog with pricing and photos
+            Bilingual menu content, ETB pricing, spice level, fasting flag and daily stock.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={onSubmit} className="my-5 space-y-3.5">
-          {/* Category Selector */}
           <div>
             <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
-              Target Category
+              Category
             </label>
             <select
-              value={itemForm.categoryId || categories[0]?._id}
-              onChange={(e) =>
-                setItemForm({ ...itemForm, categoryId: e.target.value })
-              }
+              required
+              value={itemForm.categoryId || categories[0]?._id || ''}
+              onChange={(e) => setItemForm((prev) => ({ ...prev, categoryId: e.target.value }))}
               className="w-full rounded-xl border border-white/10 bg-[#12131A] px-4 py-2.5 text-xs text-[#F8FAFC] outline-none focus:border-[#F59E0B]"
             >
               {categories.map((c) => (
@@ -86,8 +66,7 @@ export function AddDishModal({
             </select>
           </div>
 
-          {/* Dual Names */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
                 Name (English)
@@ -96,9 +75,7 @@ export function AddDishModal({
                 required
                 placeholder="e.g. Special Kitfo"
                 value={itemForm.nameEn}
-                onChange={(e) =>
-                  setItemForm({ ...itemForm, nameEn: e.target.value })
-                }
+                onChange={(e) => setItemForm((prev) => ({ ...prev, nameEn: e.target.value }))}
               />
             </div>
             <div>
@@ -109,15 +86,12 @@ export function AddDishModal({
                 required
                 placeholder="ለምሳሌ፡ ልዩ ክትፎ"
                 value={itemForm.nameAm}
-                onChange={(e) =>
-                  setItemForm({ ...itemForm, nameAm: e.target.value })
-                }
+                onChange={(e) => setItemForm((prev) => ({ ...prev, nameAm: e.target.value }))}
               />
             </div>
           </div>
 
-          {/* Price & Image URL */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
                 Price (ETB)
@@ -125,69 +99,105 @@ export function AddDishModal({
               <Input
                 required
                 type="number"
+                min={0}
+                step="1"
                 placeholder="e.g. 450"
                 value={itemForm.price}
-                onChange={(e) =>
-                  setItemForm({ ...itemForm, price: e.target.value })
-                }
+                onChange={(e) => setItemForm((prev) => ({ ...prev, price: e.target.value }))}
               />
             </div>
             <div>
               <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
-                Image URL (Optional)
+                Prep Time (minutes)
               </label>
               <Input
-                type="url"
-                placeholder="https://..."
-                value={itemForm.imageUrl}
+                type="number"
+                min={1}
+                max={180}
+                placeholder="15"
+                value={itemForm.prepTimeMinutes}
                 onChange={(e) =>
-                  setItemForm({ ...itemForm, imageUrl: e.target.value })
+                  setItemForm((prev) => ({ ...prev, prepTimeMinutes: e.target.value }))
                 }
               />
             </div>
           </div>
 
-          {/* Description */}
           <div>
             <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
-              Description
+              Image URL (Optional)
             </label>
-            <Textarea
-              placeholder="Freshly prepared with authentic herbs and traditional butter..."
-              value={itemForm.descEn}
-              onChange={(e) =>
-                setItemForm({ ...itemForm, descEn: e.target.value })
-              }
-              rows={2}
+            <Input
+              type="url"
+              placeholder="https://images.unsplash.com/..."
+              value={itemForm.imageUrl}
+              onChange={(e) => setItemForm((prev) => ({ ...prev, imageUrl: e.target.value }))}
             />
           </div>
 
-          {/* Dietary & Spice Level */}
-          <div className="flex items-center justify-between rounded-xl border border-white/5 bg-[#12131A] p-3 text-xs text-[#CBD5E1]">
-            <label className="flex items-center gap-2 font-bold cursor-pointer">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                Description (English)
+              </label>
+              <Textarea
+                placeholder="Freshly prepared with authentic herbs..."
+                value={itemForm.descEn}
+                onChange={(e) => setItemForm((prev) => ({ ...prev, descEn: e.target.value }))}
+                rows={3}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                Description (አማርኛ)
+              </label>
+              <Textarea
+                placeholder="በባህላዊ ቅመሞች የተዘጋጀ..."
+                value={itemForm.descAm}
+                onChange={(e) => setItemForm((prev) => ({ ...prev, descAm: e.target.value }))}
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/5 bg-[#12131A] p-3 text-xs text-[#CBD5E1]">
+            <label className="flex cursor-pointer items-center gap-2 font-bold">
               <input
                 type="checkbox"
                 checked={itemForm.isFasting}
                 onChange={(e) =>
-                  setItemForm({ ...itemForm, isFasting: e.target.checked })
+                  setItemForm((prev) => ({ ...prev, isFasting: e.target.checked }))
                 }
-                className="accent-[#F59E0B] h-4 w-4 rounded cursor-pointer"
+                className="h-4 w-4 cursor-pointer accent-[#F59E0B]"
               />
-              <span>የጾም (Vegan Fasting)</span>
+              <span>የጾም / Vegan</span>
+            </label>
+
+            <label className="flex cursor-pointer items-center gap-2 font-bold">
+              <input
+                type="checkbox"
+                checked={itemForm.isAvailable}
+                onChange={(e) =>
+                  setItemForm((prev) => ({ ...prev, isAvailable: e.target.checked }))
+                }
+                className="h-4 w-4 cursor-pointer accent-emerald-500"
+              />
+              <span>In stock today</span>
             </label>
 
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase text-[#94A3B8]">
-                Spice:
-              </span>
+              <span className="text-[10px] font-extrabold uppercase text-[#94A3B8]">Spice:</span>
               <select
                 value={itemForm.spiceLevel}
                 onChange={(e) =>
-                  setItemForm({ ...itemForm, spiceLevel: e.target.value })
+                  setItemForm((prev) => ({
+                    ...prev,
+                    spiceLevel: e.target.value as DishForm['spiceLevel'],
+                  }))
                 }
                 className="rounded-lg border border-white/10 bg-[#171821] px-2 py-1 text-xs text-[#CBD5E1] outline-none focus:border-[#F59E0B]"
               >
-                <option value="None">No Spice</option>
+                <option value="None">None</option>
                 <option value="Mild">Mild</option>
                 <option value="Medium">Medium</option>
                 <option value="Spicy">Spicy</option>
@@ -195,16 +205,11 @@ export function AddDishModal({
             </div>
           </div>
 
-          {/* Form Actions */}
           <div className="flex gap-2.5 pt-2">
-            <Button type="submit" className="flex-1">
-              Save Dish to Catalog
+            <Button type="submit" className="flex-1" disabled={busy}>
+              {busy ? 'Saving…' : editing ? 'Save Changes' : 'Save Dish to Catalog'}
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
           </div>

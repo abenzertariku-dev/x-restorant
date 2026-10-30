@@ -1,209 +1,388 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import { api } from '@/lib/api';
-import { Order } from '@/types';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Bike,
   MapPin,
   Phone,
   CheckCircle2,
   Navigation,
-  LogOut,
-  ArrowLeft,
+  RefreshCw,
+  ExternalLink,
+  Clock,
+  PackageCheck,
+  Route,
+  AlertTriangle,
+  Loader2,
+  Wallet,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { AuthGuard } from '@/components/shared/AuthGuard';
+import { PortalHeader } from '@/components/shared/PortalHeader';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { api } from '@/lib/api';
+import { getSocket, joinRoom } from '@/lib/socket';
+import { elapsedMinutes, formatETB, paymentLabel, statusVariant } from '@/lib/format';
+import { useLanguage } from '@/context/LanguageContext';
+import type { Order } from '@/types';
 
 export default function DriverPage() {
+  return (
+    <AuthGuard roles={['driver', 'manager', 'admin']}>
+      <DriverDispatch />
+    </AuthGuard>
+  );
+}
+
+function DriverDispatch() {
+  const { t } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [gpsActive, setGpsActive] = useState(false);
-  const { user, logout } = useAuth();
-  const lastBroadcast = useRef<number>(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [busyId, setBusyId] = useState('');
+  const lastBroadcast = useRef(0);
+  const ordersRef = useRef<Order[]>([]);
 
-  const loadDeliveries = async () => {
-    try {
-      const res = await api<{ success: boolean; orders: Order[] }>('/orders?type=delivery');
-      if (res.success) {
-        const active = res.orders.filter((o) =>
-          ['ready', 'out_for_delivery', 'preparing'].includes(o.status)
-        );
-        setOrders(active);
-      }
-    } catch (err) {
-      console.error(err);
+  const loadDeliveries = useCallback(async () => {
+    const res = await api<{ success: boolean; orders: Order[] }>('/orders?type=delivery&limit=100');
+    if (res.success) {
+      const active = res.orders.filter((order) =>
+        ['preparing', 'ready', 'out_for_delivery'].includes(order.status)
+      );
+      setOrders(active);
+      ordersRef.current = active;
     }
-  };
+  }, []);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await loadDeliveries();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load deliveries.');
+    } finally {
+      setLoading(false);
+    }
+  }, [loadDeliveries]);
 
   useEffect(() => {
-    loadDeliveries();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load();
+  }, [load]);
 
-    if ('geolocation' in navigator) {
-      const watchId = navigator.geolocation.watchPosition(
-        (pos) => {
-          const current = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          setCoords(current);
-          setGpsActive(true);
+  useEffect(() => {
+    const socket = getSocket();
+    joinRoom('driver');
+    const reload = () => loadDeliveries();
+    socket.on('order:created', reload);
+    socket.on('order:updated', reload);
+    socket.on('order:settled', reload);
+    return () => {
+      socket.off('order:created', reload);
+      socket.off('order:updated', reload);
+      socket.off('order:settled', reload);
+    };
+  }, [loadDeliveries]);
 
-          if (Date.now() - lastBroadcast.current > 15000) {
-            lastBroadcast.current = Date.now();
-            orders.forEach((o) => {
-              if (o.status === 'out_for_delivery') {
-                api(`/orders/${o._id}/driver-location`, {
-                  method: 'POST',
-                  body: current,
-                }).catch(() => {});
-              }
-            });
-          }
-        },
-        () => setGpsActive(false),
-        { enableHighAccuracy: true }
-      );
+  useEffect(() => {
+    if (!('geolocation' in navigator)) return;
 
-      return () => navigator.geolocation.clearWatch(watchId);
-    }
-  }, [orders]);
-
-  const updateStage = async (orderId: string, status: string) => {
-    try {
-      await api(`/orders/${orderId}/status`, {
-        method: 'PATCH',
-        body: { status },
+    const broadcast = (current: { lat: number; lng: number }) => {
+      const inTransit = ordersRef.current.filter((order) => order.status === 'out_for_delivery');
+      if (inTransit.length === 0) return;
+      if (Date.now() - lastBroadcast.current < 15000) return;
+      lastBroadcast.current = Date.now();
+      inTransit.forEach((order) => {
+        api(`/orders/${order._id}/driver-location`, {
+          method: 'POST',
+          body: current,
+        }).catch(() => {});
       });
-      loadDeliveries();
+    };
+
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const current = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setCoords(current);
+        setGpsActive(true);
+        broadcast(current);
+      },
+      () => setGpsActive(false),
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []);
+
+  const updateStage = async (orderId: string, status: 'out_for_delivery' | 'delivered') => {
+    setBusyId(orderId);
+    setError('');
+    try {
+      await api(`/orders/${orderId}/status`, { method: 'PATCH', body: { status } });
+      await loadDeliveries();
     } catch (err) {
-      console.error(err);
+      setError(err instanceof Error ? err.message : 'Failed to update delivery.');
+    } finally {
+      setBusyId('');
     }
   };
 
+  const stats = useMemo(
+    () => ({
+      ready: orders.filter((order) => order.status === 'ready').length,
+      transit: orders.filter((order) => order.status === 'out_for_delivery').length,
+      preparing: orders.filter((order) => order.status === 'preparing').length,
+      value: orders.reduce((sum, order) => sum + order.totalAmount, 0),
+    }),
+    [orders]
+  );
+
   return (
-    <div className="min-h-screen bg-[#0F1015] p-4 sm:p-6 pb-24 text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
-      {/* Driver Header */}
-      <header className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/5 bg-[#14151D] p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F59E0B] text-[#0F1015] shadow-sm">
-            <Bike className="h-6 w-6 stroke-[2.2]" />
-          </div>
-          <div>
-            <h1 className="text-xl font-black text-[#F8FAFC]">DELIVERY DISPATCH</h1>
-            <p className="text-xs text-[#94A3B8]">
-              Active Courier: <span className="font-bold text-[#F59E0B]">{user?.name || 'Courier Staff'}</span>
-            </p>
-          </div>
+    <div className="min-h-screen bg-[#0F1015] text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
+      <div className="mx-auto w-full max-w-4xl p-4 pb-24 sm:p-6 lg:p-8">
+        <PortalHeader
+          title="Delivery Dispatch"
+          subtitle={`${orders.length} active runs · ${stats.transit} in transit · GPS ${
+            gpsActive ? 'live' : 'acquiring'
+          }`}
+          icon={Bike}
+          roleLabel="Driver"
+          showLanguage
+        >
+          <Button variant="outline" size="sm" onClick={load} title="Refresh deliveries">
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </PortalHeader>
+
+        <div
+          className={`mb-5 flex flex-wrap items-center gap-2.5 rounded-xl border px-4 py-3 text-xs ${
+            gpsActive
+              ? 'border-emerald-500/20 bg-emerald-500/[0.04]'
+              : 'border-[#F59E0B]/20 bg-[#F59E0B]/[0.04]'
+          }`}
+        >
+          <span className="relative flex h-3 w-3">
+            <span
+              className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                gpsActive ? 'animate-ping bg-emerald-400' : 'bg-amber-400'
+              }`}
+            />
+            <span
+              className={`relative inline-flex h-3 w-3 rounded-full ${
+                gpsActive ? 'bg-emerald-500' : 'bg-amber-500'
+              }`}
+            />
+          </span>
+          <span className="text-[#94A3B8]">
+            {gpsActive && coords
+              ? `Live GPS broadcasting to customers · ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
+              : 'Acquiring GPS location for live transit tracking…'}
+          </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/admin" className="flex items-center gap-1.5">
-              <ArrowLeft className="h-3.5 w-3.5 text-[#F59E0B]" /> Admin
-            </Link>
-          </Button>
+        {error && (
+          <div className="mb-4 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-400">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <span className="flex-1">{error}</span>
+            <button
+              type="button"
+              onClick={() => setError('')}
+              className="cursor-pointer text-rose-300 hover:text-white"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
 
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={logout}
-            className="flex items-center gap-1.5"
-          >
-            <LogOut className="h-3.5 w-3.5" /> Exit
-          </Button>
+        <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {[
+            { label: 'Preparing', value: stats.preparing, icon: Clock, tone: 'text-orange-400' },
+            { label: 'Ready', value: stats.ready, icon: PackageCheck, tone: 'text-emerald-400' },
+            { label: 'On the road', value: stats.transit, icon: Route, tone: 'text-sky-400' },
+            {
+              label: 'Run value',
+              value: formatETB(stats.value),
+              icon: Wallet,
+              tone: 'text-[#F59E0B]',
+            },
+          ].map((stat) => (
+            <Card key={stat.label} className="p-4">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                    {stat.label}
+                  </p>
+                  <p className="mt-1 text-lg font-black text-[#F8FAFC]">{stat.value}</p>
+                </div>
+                <stat.icon className={`h-5 w-5 ${stat.tone}`} />
+              </div>
+            </Card>
+          ))}
         </div>
-      </header>
 
-      {/* GPS Status Indicator */}
-      <div className="mb-6 flex items-center gap-2.5 rounded-xl border border-white/5 bg-[#171821] px-4 py-3 text-xs max-w-3xl">
-        <span className="relative flex h-3 w-3">
-          <span
-            className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
-              gpsActive ? 'animate-ping bg-emerald-400' : 'bg-amber-400'
-            }`}
-          />
-          <span
-            className={`relative inline-flex h-3 w-3 rounded-full ${
-              gpsActive ? 'bg-emerald-500' : 'bg-amber-500'
-            }`}
-          />
-        </span>
-        <span className="text-[#94A3B8]">
-          {gpsActive && coords
-            ? `Live GPS Active: ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}`
-            : 'Acquiring GPS location for live transit tracking…'}
-        </span>
-      </div>
-
-      {/* Assigned Delivery Orders */}
-      <div className="space-y-4 max-w-3xl">
-        {orders.length === 0 ? (
+        {loading ? (
+          <div className="flex min-h-[45vh] flex-col items-center justify-center gap-3 text-[#94A3B8]">
+            <Loader2 className="h-8 w-8 animate-spin text-[#F59E0B]" />
+            <p className="text-xs font-bold uppercase tracking-widest">Loading dispatch…</p>
+          </div>
+        ) : orders.length === 0 ? (
           <Card className="py-24 text-center text-[#94A3B8]">
             <Bike className="mx-auto h-12 w-12 text-[#94A3B8]/30" />
-            <h3 className="mt-3 font-extrabold text-[#F8FAFC] text-base">No active delivery assignments</h3>
-            <p className="text-xs text-[#94A3B8] mt-1">
-              New customer delivery orders will appear here automatically.
+            <h3 className="mt-3 text-base font-extrabold text-[#F8FAFC]">
+              No active delivery assignments
+            </h3>
+            <p className="mt-1 text-xs text-[#94A3B8]">
+              New delivery orders will appear here automatically.
             </p>
           </Card>
         ) : (
-          orders.map((ord) => {
-            const isOut = ord.status === 'out_for_delivery';
+          <div className="space-y-4">
+            {orders.map((order) => {
+              const isOut = order.status === 'out_for_delivery';
+              const isReady = order.status === 'ready';
+              const address = order.customer?.address || '';
+              const mapsUrl = address
+                ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`
+                : '#';
 
-            return (
-              <Card
-                key={ord._id}
-                className="p-5 sm:p-6 shadow-sm"
-              >
-                <div className="flex items-center justify-between border-b border-white/5 pb-3.5">
-                  <div>
-                    <span className="text-xs font-bold font-mono text-[#F59E0B]">
-                      ORDER #{ord.orderNumber}
-                    </span>
-                    <h2 className="text-xl font-black text-[#F8FAFC]">{ord.customer?.name || 'Guest'}</h2>
+              return (
+                <Card key={order._id} className="p-5 shadow-sm sm:p-6">
+                  <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/5 pb-3.5">
+                    <div>
+                      <span className="font-mono text-xs font-bold text-[#F59E0B]">
+                        ORDER #{order.orderNumber}
+                      </span>
+                      <h2 className="text-xl font-black text-[#F8FAFC]">
+                        {order.customer?.name || 'Guest'}
+                      </h2>
+                      <p className="mt-0.5 text-[10px] text-[#64748B]">
+                        <Clock className="mr-1 inline h-3 w-3" />
+                        {elapsedMinutes(order.createdAt)} min ago · {order.items.length} items
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1.5">
+                      <Badge variant={statusVariant(order.status)}>{t(order.status)}</Badge>
+                      <span className="font-mono text-sm font-black text-[#F8FAFC]">
+                        {formatETB(order.totalAmount)}
+                      </span>
+                      <span className="text-[10px] uppercase text-[#64748B]">
+                        {paymentLabel(order.payment?.method)}
+                      </span>
+                    </div>
                   </div>
-                  <Badge variant="outline" className="px-3.5 py-1 text-xs">
-                    {ord.status.replace('_', ' ')}
-                  </Badge>
-                </div>
 
-                <div className="my-4 space-y-2.5 text-sm">
-                  <div className="flex items-start gap-2.5 text-[#CBD5E1]">
-                    <MapPin className="h-4 w-4 shrink-0 text-[#F59E0B] mt-0.5" />
-                    <span className="text-xs leading-relaxed">{ord.customer?.address || 'No address specified'}</span>
+                  <div className="my-4 space-y-2.5 text-sm">
+                    <div className="flex items-start gap-2.5 text-[#CBD5E1]">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#F59E0B]" />
+                      <span className="text-xs leading-relaxed">
+                        {address || 'No address specified'}
+                      </span>
+                    </div>
+
+                    {order.customer?.notes && (
+                      <p className="rounded-lg border border-[#F59E0B]/20 bg-[#F59E0B]/10 px-3 py-2 text-[11px] text-[#F59E0B]">
+                        Delivery note: {order.customer.notes}
+                      </p>
+                    )}
+
+                    <div className="flex flex-wrap gap-2">
+                      {order.customer?.phone && (
+                        <a
+                          href={`tel:${order.customer.phone}`}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-3 py-1.5 text-xs font-bold text-[#F59E0B] transition hover:bg-[#F59E0B]/20"
+                        >
+                          <Phone className="h-3.5 w-3.5" /> {order.customer.phone}
+                        </a>
+                      )}
+                      {address && (
+                        <a
+                          href={mapsUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#171821] px-3 py-1.5 text-xs font-bold text-[#CBD5E1] transition hover:border-white/20"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" /> Open in Maps
+                        </a>
+                      )}
+                    </div>
                   </div>
 
-                  {ord.customer?.phone && (
-                    <a
-                      href={`tel:${ord.customer.phone}`}
-                      className="inline-flex items-center gap-2 rounded-lg border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-3.5 py-1.5 text-xs font-bold text-[#F59E0B] hover:bg-[#F59E0B]/20 transition"
-                    >
-                      <Phone className="h-3.5 w-3.5" /> Call Customer ({ord.customer.phone})
-                    </a>
-                  )}
-                </div>
+                  <div className="mb-3 rounded-xl border border-white/5 bg-[#14151D] p-3 text-[11px]">
+                    {order.items.map((item, index) => (
+                      <div key={`${item.menuItem}-${index}`} className="flex justify-between text-[#94A3B8]">
+                        <span>
+                          {item.qty}× {item.name.en}
+                        </span>
+                        <span className="font-mono">{formatETB(item.qty * item.price)}</span>
+                      </div>
+                    ))}
+                  </div>
 
-                <div className="mt-4 border-t border-white/5 pt-3.5">
-                  {!isOut ? (
-                    <Button
-                      onClick={() => updateStage(ord._id, 'out_for_delivery')}
-                      className="w-full flex items-center justify-center gap-2 uppercase tracking-wider text-xs py-3.5 h-auto font-black"
-                    >
-                      <Navigation className="h-4 w-4 stroke-[2.5]" /> Start Delivery Run
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="success"
-                      onClick={() => updateStage(ord._id, 'delivered')}
-                      className="w-full flex items-center justify-center gap-2 uppercase tracking-wider text-xs py-3.5 h-auto font-black"
-                    >
-                      <CheckCircle2 className="h-4 w-4 stroke-[2.5]" /> Mark Order Delivered
-                    </Button>
-                  )}
-                </div>
-              </Card>
-            );
-          })
+                  <div className="mb-4 flex items-center gap-1">
+                    {['preparing', 'out_for_delivery', 'delivered'].map((step, index) => {
+                      const labels = ['Kitchen', 'On the road', 'Delivered'];
+                      const progress =
+                        order.status === 'preparing'
+                          ? 0
+                          : order.status === 'ready'
+                            ? 0.5
+                            : order.status === 'out_for_delivery'
+                              ? 1
+                              : 2;
+                      const reached = index <= progress;
+                      return (
+                        <div key={step} className="flex flex-1 items-center gap-1">
+                          <div className="flex flex-1 flex-col items-center gap-1">
+                            <span
+                              className={`h-1.5 w-full rounded-full ${
+                                reached ? 'bg-[#F59E0B]' : 'bg-white/5'
+                              }`}
+                            />
+                            <span
+                              className={`text-[9px] font-bold uppercase ${
+                                reached ? 'text-[#F59E0B]' : 'text-[#64748B]'
+                              }`}
+                            >
+                              {labels[index]}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="border-t border-white/5 pt-3.5">
+                    {isOut ? (
+                      <Button
+                        variant="success"
+                        disabled={busyId === order._id}
+                        onClick={() => updateStage(order._id, 'delivered')}
+                        className="h-auto w-full py-3.5 text-xs font-black uppercase tracking-wider"
+                      >
+                        <CheckCircle2 className="mr-2 h-4 w-4 stroke-[2.5]" /> Mark Order Delivered
+                      </Button>
+                    ) : (
+                      <Button
+                        disabled={busyId === order._id || !isReady}
+                        onClick={() => updateStage(order._id, 'out_for_delivery')}
+                        className="h-auto w-full py-3.5 text-xs font-black uppercase tracking-wider"
+                      >
+                        <Navigation className="mr-2 h-4 w-4 stroke-[2.5]" />
+                        {isReady ? 'Start Delivery Run' : 'Waiting for kitchen to finish'}
+                      </Button>
+                    )}
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>

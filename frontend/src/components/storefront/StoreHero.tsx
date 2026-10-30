@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { MenuItem } from '@/types';
+import { BilingualText, MenuItem } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, ArrowRight, Bike } from 'lucide-react';
@@ -9,7 +9,7 @@ import { Sparkles, ArrowRight, Bike } from 'lucide-react';
 interface StoreHeroProps {
   featuredItem?: MenuItem;
   onOrderNow: (itemId: string) => void;
-  getText: (field: any) => string;
+  getText: (field?: Partial<BilingualText> | null) => string;
 }
 
 export function StoreHero({ featuredItem, onOrderNow, getText }: StoreHeroProps) {

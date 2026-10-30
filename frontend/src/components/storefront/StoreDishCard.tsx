@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { MenuItem } from '@/types';
-import { Card, CardContent } from '@/components/ui/card';
+import { MenuItem, BilingualText } from '@/types';
+import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus, Leaf, Flame } from 'lucide-react';
@@ -11,7 +11,7 @@ interface StoreDishCardProps {
   item: MenuItem;
   quantity: number;
   onUpdateQuantity: (delta: number) => void;
-  getText: (field: any) => string;
+  getText: (field?: Partial<BilingualText> | null) => string;
 }
 
 export function StoreDishCard({

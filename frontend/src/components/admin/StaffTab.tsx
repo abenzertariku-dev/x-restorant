@@ -1,24 +1,71 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Plus, Shield, Phone, KeyRound } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Role, User } from '@/types';
 
 interface StaffTabProps {
   staff: User[];
+  onCreateStaff: (payload: {
+    name: string;
+    role: Role;
+    pin: string;
+    phone: string;
+  }) => Promise<void>;
+  creating?: boolean;
 }
 
-export function StaffTab({ staff }: StaffTabProps) {
+const ROLES: Role[] = ['admin', 'manager', 'waiter', 'kitchen', 'cashier', 'driver'];
+
+const roleTone: Record<Role, string> = {
+  admin: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
+  manager: 'text-[#F59E0B] bg-[#F59E0B]/10 border-[#F59E0B]/30',
+  waiter: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
+  kitchen: 'text-orange-400 bg-orange-500/10 border-orange-500/30',
+  cashier: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+  driver: 'text-violet-400 bg-violet-500/10 border-violet-500/30',
+};
+
+const emptyForm = { name: '', role: 'waiter' as Role, pin: '', phone: '' };
+
+export function StaffTab({ staff, onCreateStaff, creating = false }: StaffTabProps) {
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState(emptyForm);
+  const [error, setError] = useState('');
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (!/^\d{4,6}$/.test(form.pin)) {
+      setError('PIN must be 4 to 6 digits.');
+      return;
+    }
+    try {
+      await onCreateStaff(form);
+      setForm(emptyForm);
+      setOpen(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not create staff account.');
+    }
+  };
+
   return (
     <Card className="p-6">
-      <div className="mb-6">
-        <h3 className="text-base font-extrabold text-[#F8FAFC]">
-          Staff Accounts & Permissions
-        </h3>
-        <p className="text-xs text-[#94A3B8]">
-          Staff members authenticate using their role-assigned credentials across kitchen, waiter, and cashier terminals
-        </p>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 className="text-base font-extrabold text-[#F8FAFC]">Staff Accounts & Permissions</h3>
+          <p className="text-xs text-[#94A3B8]">
+            Create logins and PINs for managers, waiters, kitchen, cashiers and drivers.
+          </p>
+        </div>
+        <Button onClick={() => setOpen(true)}>
+          <Plus className="mr-1.5 h-4 w-4" /> Add Staff
+        </Button>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -28,32 +75,132 @@ export function StaffTab({ staff }: StaffTabProps) {
             className="rounded-2xl border border-white/5 bg-[#1D1E2A] p-5 shadow-sm transition hover:border-[#F59E0B]/30"
           >
             <div className="flex items-start justify-between">
-              <div>
-                <h4 className="font-extrabold text-[#F8FAFC] text-sm">{s.name}</h4>
-                <p className="text-[11px] font-black uppercase tracking-wider text-[#F59E0B] mt-0.5">
-                  {s.role}
+              <div className="min-w-0">
+                <h4 className="truncate text-sm font-extrabold text-[#F8FAFC]">{s.name}</h4>
+                <p className="mt-1">
+                  <span
+                    className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${roleTone[s.role]}`}
+                  >
+                    {s.role}
+                  </span>
                 </p>
               </div>
-              <Badge variant="success">
-                Active
+              <Badge variant={s.active === false ? 'destructive' : 'success'}>
+                {s.active === false ? 'Inactive' : 'Active'}
               </Badge>
             </div>
 
-            <div className="mt-4 rounded-xl border border-white/5 bg-[#14151D] p-3 text-xs space-y-1.5">
-              <div className="flex justify-between text-[#94A3B8]">
-                <span>Username:</span>
-                <span className="font-mono font-bold text-[#F8FAFC]">
+            <div className="mt-4 space-y-1.5 rounded-xl border border-white/5 bg-[#14151D] p-3 text-xs">
+              <div className="flex items-center justify-between gap-2 text-[#94A3B8]">
+                <span className="flex items-center gap-1.5">
+                  <KeyRound className="h-3.5 w-3.5" /> Login
+                </span>
+                <span className="truncate font-mono font-bold text-[#F8FAFC]">
                   {s.username || s.name.toLowerCase()}
                 </span>
               </div>
-              <div className="flex justify-between text-[#94A3B8]">
-                <span>Contact:</span>
-                <span className="font-mono text-[#CBD5E1]">{s.phone || 'N/A'}</span>
+              <div className="flex items-center justify-between gap-2 text-[#94A3B8]">
+                <span className="flex items-center gap-1.5">
+                  <Phone className="h-3.5 w-3.5" /> Contact
+                </span>
+                <span className="truncate font-mono text-[#CBD5E1]">{s.phone || 'N/A'}</span>
               </div>
             </div>
           </div>
         ))}
+        {staff.length === 0 && (
+          <div className="col-span-full rounded-2xl border border-dashed border-white/10 py-12 text-center text-xs text-[#94A3B8]">
+            No staff accounts returned by the server.
+          </div>
+        )}
       </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent onClose={() => setOpen(false)}>
+          <DialogHeader>
+            <DialogTitle>Create Staff Login</DialogTitle>
+            <DialogDescription>
+              The staff member signs in with their name and 4–6 digit PIN.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={submit} className="mt-5 space-y-3.5">
+            <div>
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                Full Name
+              </label>
+              <Input
+                required
+                value={form.name}
+                onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                placeholder="e.g. Selam Tadesse"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                  Role
+                </label>
+                <select
+                  value={form.role}
+                  onChange={(e) => setForm((p) => ({ ...p, role: e.target.value as Role }))}
+                  className="w-full rounded-xl border border-white/10 bg-[#12131A] px-4 py-2.5 text-xs text-[#F8FAFC] outline-none focus:border-[#F59E0B]"
+                >
+                  {ROLES.map((r) => (
+                    <option key={r} value={r} className="bg-[#171821] capitalize">
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                  PIN (4–6 digits)
+                </label>
+                <Input
+                  required
+                  inputMode="numeric"
+                  pattern="\d{4,6}"
+                  maxLength={6}
+                  value={form.pin}
+                  onChange={(e) => setForm((p) => ({ ...p, pin: e.target.value.replace(/\D/g, '') }))}
+                  placeholder="e.g. 4321"
+                  className="font-mono tracking-widest"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                Phone (Optional)
+              </label>
+              <Input
+                value={form.phone}
+                onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
+                placeholder="+251911000000"
+              />
+            </div>
+
+            {error && (
+              <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-400">
+                {error}
+              </p>
+            )}
+
+            <div className="flex items-center gap-2 rounded-xl border border-white/5 bg-[#12131A] p-3 text-[11px] text-[#94A3B8]">
+              <Shield className="h-4 w-4 shrink-0 text-[#F59E0B]" />
+              This account will be restricted to the {form.role} portal.
+            </div>
+
+            <div className="flex gap-2.5 pt-1">
+              <Button type="submit" className="flex-1" disabled={creating}>
+                {creating ? 'Creating…' : 'Create Staff Account'}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

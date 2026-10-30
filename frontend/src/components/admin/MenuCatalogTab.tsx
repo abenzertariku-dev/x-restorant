@@ -14,7 +14,8 @@ interface MenuCatalogTabProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   onToggleStock: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete?: (id: string) => void;
+  onEdit: (item: MenuItem) => void;
   onOpenAddModalForCategory: (categoryId: string) => void;
 }
 
@@ -26,6 +27,7 @@ export function MenuCatalogTab({
   setSearchQuery,
   onToggleStock,
   onDelete,
+  onEdit,
   onOpenAddModalForCategory,
 }: MenuCatalogTabProps) {
   const { getText } = useLanguage();
@@ -138,6 +140,7 @@ export function MenuCatalogTab({
                     item={it}
                     onToggleStock={onToggleStock}
                     onDelete={onDelete}
+                    onEdit={onEdit}
                   />
                 ))}
 

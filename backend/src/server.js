@@ -20,9 +20,6 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
-// Connect Database
-connectDB();
-
 // Setup Socket.io for Real-time events
 const io = new Server(server, {
   cors: {
@@ -88,8 +85,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server
-server.listen(PORT, () => {
-  console.log(`🚀 Express API & WebSocket Server running on port ${PORT}`);
-  console.log(`👉 CORS Allowed: ${FRONTEND_URL}`);
-});
+// Connect Database, then start accepting requests
+connectDB()
+  .then(() => {
+    server.listen(PORT, () => {
+      console.log(`🚀 Express API & WebSocket Server running on port ${PORT}`);
+      console.log(`👉 CORS Allowed: ${FRONTEND_URL}`);
+    });
+  })
+  .catch(() => {
+    console.error('❌ Server not started because MongoDB is unavailable.');
+    process.exit(1);
+  });

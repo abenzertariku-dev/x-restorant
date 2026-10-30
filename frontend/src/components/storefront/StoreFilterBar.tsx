@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Category } from '@/types';
+import { BilingualText, Category } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Leaf, Search } from 'lucide-react';
@@ -14,7 +14,7 @@ interface StoreFilterBarProps {
   onSelectCategory: (id: string) => void;
   onToggleFasting: () => void;
   onSearchChange: (query: string) => void;
-  getText: (field: any) => string;
+  getText: (field?: Partial<BilingualText> | null) => string;
 }
 
 export function StoreFilterBar({

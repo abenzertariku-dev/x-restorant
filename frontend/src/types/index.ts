@@ -12,6 +12,9 @@ export interface User {
   name: string;
   role: Role;
   phone?: string;
+  username?: string;
+  active?: boolean;
+  createdAt?: string;
 }
 
 export interface Category {
@@ -19,7 +22,8 @@ export interface Category {
   name: BilingualText;
   slug: string;
   icon: string;
-  order: number;
+  order?: number;
+  items?: MenuItem[];
 }
 
 export interface MenuItem {
@@ -45,19 +49,32 @@ export interface OrderItem {
   status?: 'pending' | 'preparing' | 'ready' | 'served';
 }
 
+export type PaymentMethod = 'telebirr' | 'cbe_transfer' | 'awash_transfer' | 'cash';
+
 export interface SplitPayment {
   guestName: string;
-  method: 'telebirr' | 'cbe_transfer' | 'awash_transfer' | 'cash';
+  method: PaymentMethod;
   amount: number;
   referenceCode?: string;
   status: 'pending' | 'verified';
 }
 
+export type OrderStatus =
+  | 'pending'
+  | 'approved'
+  | 'preparing'
+  | 'ready'
+  | 'served'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'settled'
+  | 'cancelled';
+
 export interface Order {
   _id: string;
   orderNumber: number;
   type: 'dine_in' | 'takeaway' | 'delivery';
-  tableNumber?: number;
+  tableNumber?: number | null;
   customer?: {
     name?: string;
     phone?: string;
@@ -66,29 +83,31 @@ export interface Order {
   };
   items: OrderItem[];
   totalAmount: number;
-  status:
-    | 'pending'
-    | 'approved'
-    | 'preparing'
-    | 'ready'
-    | 'served'
-    | 'out_for_delivery'
-    | 'delivered'
-    | 'settled'
-    | 'cancelled';
+  status: OrderStatus;
   payment: {
-    method: 'telebirr' | 'cbe_transfer' | 'awash_transfer' | 'cash' | 'split' | 'unpaid';
+    method: PaymentMethod | 'split' | 'unpaid';
     referenceCode?: string;
     screenshotUrl?: string;
     status: 'pending' | 'verified' | 'refunded';
     splits?: SplitPayment[];
+    verifiedAt?: string;
   };
   driverLocation?: {
     lat: number;
     lng: number;
     updatedAt: string;
   };
+  timeline?: {
+    createdAt?: string;
+    approvedAt?: string;
+    preparingAt?: string;
+    readyAt?: string;
+    servedAt?: string;
+    deliveredAt?: string;
+    settledAt?: string;
+  };
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Table {
@@ -97,23 +116,46 @@ export interface Table {
   zone: 'Indoor' | 'Terrace' | 'VIP' | 'Balcony';
   capacity: number;
   status: 'available' | 'occupied' | 'call_waiter' | 'bill_requested';
-  lastCallAt?: string;
-  lastBillRequestAt?: string;
+  lastCallAt?: string | null;
+  lastBillRequestAt?: string | null;
   orders?: Order[];
 }
 
+export interface BankAccount {
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+}
+
 export interface RestaurantSetting {
+  _id?: string;
   name: BilingualText;
   intro: BilingualText;
   wifiName: string;
   wifiPass: string;
-  banks: Array<{
-    bankName: string;
-    accountName: string;
-    accountNumber: string;
-  }>;
+  banks: BankAccount[];
   telebirrMerchantCode: string;
   telebirrMerchantName: string;
   tablesCount: number;
   directKitchenRouting: boolean;
+}
+
+export interface CartLine {
+  item: MenuItem;
+  qty: number;
+  notes: string;
+}
+
+export interface DishForm {
+  nameEn: string;
+  nameAm: string;
+  descEn: string;
+  descAm: string;
+  price: string;
+  categoryId: string;
+  spiceLevel: MenuItem['spiceLevel'];
+  isFasting: boolean;
+  imageUrl: string;
+  prepTimeMinutes: string;
+  isAvailable: boolean;
 }

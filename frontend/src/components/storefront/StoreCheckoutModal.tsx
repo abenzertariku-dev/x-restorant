@@ -1,136 +1,221 @@
 'use client';
 
-import React, { useState } from 'react';
-import { RestaurantSetting } from '@/types';
+import React, { useMemo, useState } from 'react';
+import { RestaurantSetting, PaymentMethod } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Copy } from 'lucide-react';
+import { Copy, Bike, ShoppingBag, X, Landmark } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
+import { formatETB } from '@/lib/format';
+
+export interface CheckoutLine {
+  id: string;
+  name: string;
+  price: number;
+  qty: number;
+}
+
+export interface CheckoutPayload {
+  type: 'delivery' | 'takeaway';
+  customerName: string;
+  phone: string;
+  address: string;
+  notes: string;
+  paymentMethod: PaymentMethod;
+  refCode: string;
+}
 
 interface StoreCheckoutModalProps {
   isOpen: boolean;
+  lines: CheckoutLine[];
   totalPrice: number;
   settings: RestaurantSetting | null;
   busy: boolean;
   onClose: () => void;
-  onSubmit: (data: {
-    customerName: string;
-    phone: string;
-    address: string;
-    paymentMethod: 'telebirr' | 'cbe_transfer' | 'cash';
-    refCode: string;
-  }) => Promise<void>;
+  onSubmit: (data: CheckoutPayload) => Promise<void>;
 }
+
+const methods: { id: PaymentMethod; label: string; icon: string }[] = [
+  { id: 'telebirr', label: 'Telebirr', icon: '📱' },
+  { id: 'cbe_transfer', label: 'CBE Bank', icon: '🏦' },
+  { id: 'awash_transfer', label: 'Awash Bank', icon: '🏛️' },
+  { id: 'cash', label: 'Cash', icon: '💵' },
+];
 
 export function StoreCheckoutModal({
   isOpen,
+  lines,
   totalPrice,
   settings,
   busy,
   onClose,
   onSubmit,
 }: StoreCheckoutModalProps) {
+  const { t } = useLanguage();
+  const [type, setType] = useState<'delivery' | 'takeaway'>('delivery');
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'telebirr' | 'cbe_transfer' | 'cash'>('telebirr');
+  const [notes, setNotes] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('telebirr');
   const [refCode, setRefCode] = useState('');
-  const [copiedBank, setCopiedBank] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const bank = useMemo(() => {
+    if (!settings?.banks?.length) return undefined;
+    const pattern = paymentMethod === 'cbe_transfer' ? /cbe|commercial/i : /awash/i;
+    return settings.banks.find((entry) => pattern.test(entry.bankName)) || settings.banks[0];
+  }, [paymentMethod, settings]);
 
   if (!isOpen) return null;
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    setCopiedBank(true);
-    setTimeout(() => setCopiedBank(false), 2000);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || !address) {
-      alert('Please provide phone number and delivery address');
+    if (!phone.trim()) {
+      alert('Please provide a phone number');
+      return;
+    }
+    if (type === 'delivery' && !address.trim()) {
+      alert('Please provide a delivery address');
+      return;
+    }
+    if (paymentMethod !== 'cash' && !/^[A-Za-z0-9-]{6,}$/.test(refCode.trim())) {
+      alert('Please enter a valid transaction reference (at least 6 characters)');
       return;
     }
     onSubmit({
-      customerName: customerName || 'Guest',
-      phone,
-      address,
+      type,
+      customerName: customerName.trim() || 'Guest',
+      phone: phone.trim(),
+      address: type === 'delivery' ? address.trim() : '',
+      notes: notes.trim(),
       paymentMethod,
-      refCode,
+      refCode: refCode.trim(),
     });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-3xl border border-white/10 bg-[#171821] p-6 sm:p-7 shadow-2xl text-[#CBD5E1]"
+        className="my-auto w-full max-w-lg rounded-3xl border border-white/10 bg-[#171821] p-6 text-[#CBD5E1] shadow-2xl sm:p-7"
       >
-        <div className="border-b border-white/5 pb-4">
-          <h3 className="text-xl font-black text-[#F8FAFC]">Delivery Order</h3>
-          <p className="mt-1 text-xs text-[#94A3B8]">
-            Total payable:{' '}
-            <b className="font-mono text-[#F59E0B]">{totalPrice.toLocaleString()} ETB</b>
-          </p>
+        <div className="flex items-start justify-between border-b border-white/5 pb-4">
+          <div>
+            <h3 className="text-xl font-black text-[#F8FAFC]">{t('checkout')}</h3>
+            <p className="mt-1 text-xs text-[#94A3B8]">
+              {t('total')}:{' '}
+              <b className="font-mono text-[#F59E0B]">{formatETB(totalPrice)}</b>
+            </p>
+          </div>
+          <Button type="button" variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
         </div>
 
-        <div className="my-5 space-y-3.5 text-xs">
+        <div className="my-5 space-y-4 text-xs">
           <div>
-            <label className="mb-1 block font-bold uppercase text-[10px] tracking-wider text-[#94A3B8]">
-              Your Full Name
+            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+              {t('orderType')}
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setType('delivery')}
+                className={`flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition ${
+                  type === 'delivery'
+                    ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#F59E0B]'
+                    : 'border-white/5 bg-[#14151D] text-[#94A3B8] hover:border-white/10'
+                }`}
+              >
+                <Bike className="h-4 w-4" /> {t('delivery')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setType('takeaway')}
+                className={`flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition ${
+                  type === 'takeaway'
+                    ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#F59E0B]'
+                    : 'border-white/5 bg-[#14151D] text-[#94A3B8] hover:border-white/10'
+                }`}
+              >
+                <ShoppingBag className="h-4 w-4" /> {t('takeaway')}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                {t('fullName')}
+              </label>
+              <Input
+                placeholder="e.g. Almaz Tadesse"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                {t('phone')} *
+              </label>
+              <Input
+                required
+                type="tel"
+                placeholder="+251 9..."
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+              />
+            </div>
+          </div>
+
+          {type === 'delivery' && (
+            <div>
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                {t('deliveryAddress')} *
+              </label>
+              <Textarea
+                required
+                placeholder="Street, landmark, house / office number in Addis Ababa"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                rows={2}
+                className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+              />
+            </div>
+          )}
+
+          <div>
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+              {t('notes')} ({t('optional')})
             </label>
             <Input
-              required
-              placeholder="e.g. Almaz Tadesse"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
+              placeholder={t('specialInstructions')}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
               className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
             />
           </div>
 
           <div>
-            <label className="mb-1 block font-bold uppercase text-[10px] tracking-wider text-[#94A3B8]">
-              Phone Number (Required) *
+            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+              {t('payment')}
             </label>
-            <Input
-              required
-              type="tel"
-              placeholder="+251 9..."
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block font-bold uppercase text-[10px] tracking-wider text-[#94A3B8]">
-              Delivery Address *
-            </label>
-            <Textarea
-              required
-              placeholder="Street, Landmark, House / Office Number in Addis Ababa"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              rows={2}
-              className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
-            />
-          </div>
-
-          {/* Payment Method Selector */}
-          <div>
-            <label className="mb-1.5 block font-bold uppercase text-[10px] tracking-wider text-[#94A3B8]">
-              Payment Method
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { id: 'telebirr', label: 'Telebirr', icon: '📱' },
-                { id: 'cbe_transfer', label: 'CBE Bank', icon: '🏦' },
-                { id: 'cash', label: 'Cash on Deliv.', icon: '💵' },
-              ].map((m) => (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {methods.map((m) => (
                 <button
                   key={m.id}
                   type="button"
-                  onClick={() => setPaymentMethod(m.id as any)}
+                  onClick={() => setPaymentMethod(m.id)}
                   className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center text-[10px] font-bold transition ${
                     paymentMethod === m.id
                       ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#F59E0B]'
@@ -144,61 +229,38 @@ export function StoreCheckoutModal({
             </div>
           </div>
 
-          {/* Telebirr Details */}
           {paymentMethod === 'telebirr' && settings?.telebirrMerchantCode && (
-            <div className="rounded-xl border border-[#F59E0B]/30 bg-[#F59E0B]/5 p-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#F59E0B]">
-                Telebirr Merchant Code:
-              </span>
-              <div className="mt-1 flex items-center justify-between">
-                <span className="font-mono text-sm font-black text-[#F8FAFC]">
-                  {settings.telebirrMerchantCode}
-                </span>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => copyToClipboard(settings.telebirrMerchantCode)}
-                  className="rounded-md bg-[#14151D] px-2.5 py-1 text-[10px] font-bold text-[#F59E0B] border-white/10 h-7"
-                >
-                  <Copy className="mr-1 h-3 w-3" />
-                  {copiedBank ? 'Copied!' : 'Copy'}
-                </Button>
-              </div>
-            </div>
+            <PaymentDetails
+              title={t('merchantCode')}
+              primary={settings.telebirrMerchantCode}
+              secondary={settings.telebirrMerchantName}
+              copied={copied}
+              onCopy={() => copyToClipboard(settings.telebirrMerchantCode)}
+              accent
+            />
           )}
 
-          {/* CBE Bank Details */}
-          {paymentMethod === 'cbe_transfer' && settings?.banks?.[0] && (
-            <div className="rounded-xl border border-white/5 bg-[#14151D] p-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
-                {settings.banks[0].bankName} Transfer:
-              </span>
-              <div className="mt-1 flex items-center justify-between">
-                <div>
-                  <p className="font-mono font-black text-[#F8FAFC]">
-                    {settings.banks[0].accountNumber}
-                  </p>
-                  <p className="text-[10px] text-[#94A3B8]">{settings.banks[0].accountName}</p>
-                </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => copyToClipboard(settings.banks[0].accountNumber)}
-                  className="rounded-md bg-[#171821] px-2.5 py-1 text-[10px] font-bold text-[#CBD5E1] border-white/10 h-7"
-                >
-                  <Copy className="mr-1 h-3 w-3" />
-                  {copiedBank ? 'Copied!' : 'Copy'}
-                </Button>
-              </div>
-            </div>
+          {(paymentMethod === 'cbe_transfer' || paymentMethod === 'awash_transfer') && bank && (
+            <PaymentDetails
+              title={`${bank.bankName} · ${t('bankTransfer')}`}
+              primary={bank.accountNumber}
+              secondary={bank.accountName}
+              copied={copied}
+              onCopy={() => copyToClipboard(bank.accountNumber)}
+            />
+          )}
+
+          {paymentMethod === 'cash' && (
+            <p className="rounded-xl border border-white/5 bg-[#14151D] p-3 text-[10px] text-[#94A3B8]">
+              Pay {type === 'delivery' ? 'the courier on delivery' : 'at the counter when you pick up'}.
+              Please have the exact amount ready where possible.
+            </p>
           )}
 
           {paymentMethod !== 'cash' && (
             <div>
-              <label className="mb-1 block font-bold uppercase text-[10px] tracking-wider text-[#94A3B8]">
-                Transaction Ref Number *
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                {t('referenceCode')} *
               </label>
               <Input
                 required
@@ -207,17 +269,42 @@ export function StoreCheckoutModal({
                 onChange={(e) => setRefCode(e.target.value)}
                 className="border-white/10 bg-[#14151D] font-mono text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
               />
+              <p className="mt-1 text-[10px] text-[#64748B]">
+                The cashier verifies this reference before the order is settled.
+              </p>
             </div>
           )}
+
+          <div className="rounded-2xl border border-white/5 bg-[#14151D] p-3">
+            <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+              <Landmark className="h-3 w-3 text-[#F59E0B]" /> {t('subtotal')}
+            </p>
+            <div className="max-h-32 space-y-1.5 overflow-y-auto pr-1">
+              {lines.map((line) => (
+                <div key={line.id} className="flex justify-between text-[11px]">
+                  <span className="text-[#CBD5E1]">
+                    {line.qty} × {line.name}
+                  </span>
+                  <span className="font-mono text-[#94A3B8]">
+                    {formatETB(line.price * line.qty)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2 flex justify-between border-t border-white/5 pt-2 text-xs font-black text-[#F8FAFC]">
+              <span>{t('total')}</span>
+              <span className="text-[#F59E0B]">{formatETB(totalPrice)}</span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex gap-2.5 pt-2">
+        <div className="flex gap-2.5 pt-1">
           <Button
             type="submit"
             disabled={busy}
             className="flex-1 rounded-full bg-[#F59E0B] py-3.5 text-xs font-black uppercase tracking-wider text-[#0F1015] shadow-lg shadow-amber-500/20 hover:bg-[#FBBF24] disabled:opacity-50"
           >
-            {busy ? 'Sending Order…' : 'CONFIRM & ORDER'}
+            {busy ? 'Sending order…' : 'Confirm & order'}
           </Button>
           <Button
             type="button"
@@ -225,10 +312,54 @@ export function StoreCheckoutModal({
             onClick={onClose}
             className="rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-xs font-bold text-[#94A3B8] hover:text-[#F8FAFC]"
           >
-            Cancel
+            {t('cancel')}
           </Button>
         </div>
       </form>
+    </div>
+  );
+}
+
+function PaymentDetails({
+  title,
+  primary,
+  secondary,
+  copied,
+  onCopy,
+  accent,
+}: {
+  title: string;
+  primary: string;
+  secondary?: string;
+  copied: boolean;
+  onCopy: () => void;
+  accent?: boolean;
+}) {
+  return (
+    <div
+      className={`rounded-xl border p-3 ${
+        accent ? 'border-[#F59E0B]/30 bg-[#F59E0B]/5' : 'border-white/5 bg-[#14151D]'
+      }`}
+    >
+      <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+        {title}
+      </span>
+      <div className="mt-1 flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <p className="truncate font-mono text-sm font-black text-[#F8FAFC]">{primary}</p>
+          {secondary && <p className="truncate text-[10px] text-[#94A3B8]">{secondary}</p>}
+        </div>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          onClick={onCopy}
+          className="h-7 shrink-0 rounded-md border-white/10 bg-[#1A1B24] px-2.5 py-1 text-[10px] font-bold text-[#F59E0B]"
+        >
+          <Copy className="mr-1 h-3 w-3" />
+          {copied ? 'Copied!' : 'Copy'}
+        </Button>
+      </div>
     </div>
   );
 }

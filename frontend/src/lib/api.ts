@@ -1,37 +1,91 @@
-export async function api<T = any>(
-  path: string,
-  options: {
-    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-    body?: any;
-    headers?: Record<string, string>;
-  } = {}
-): Promise<T> {
-  const url = path.startsWith('/api') ? path : `/api${path}`;
+export class ApiError extends Error {
+  status: number;
 
-  const res = await fetch(url, {
-    method: options.method || (options.body ? 'POST' : 'GET'),
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined,
-    credentials: 'include',
-  });
+  constructor(message: string, status = 500) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
 
-  const data = await res.json().catch(() => ({}));
+const TOKEN_KEY = 'xr_token';
+
+export const getToken = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem(TOKEN_KEY);
+};
+
+export const setToken = (token: string | null) => {
+  if (typeof window === 'undefined') return;
+  if (token) window.localStorage.setItem(TOKEN_KEY, token);
+  else window.localStorage.removeItem(TOKEN_KEY);
+};
+
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || '/api').replace(/\/+$/, '');
+
+const resolveUrl = (path: string): string => {
+  if (/^https?:\/\//i.test(path)) return path;
+  const clean = path.startsWith('/api') ? path.slice(4) : path;
+  return `${API_BASE}${clean.startsWith('/') ? clean : `/${clean}`}`;
+};
+
+export interface ApiOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  body?: unknown;
+  headers?: Record<string, string>;
+  signal?: AbortSignal;
+}
+
+export async function api<T = unknown>(path: string, options: ApiOptions = {}): Promise<T> {
+  const token = getToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  let res: Response;
+  try {
+    res = await fetch(resolveUrl(path), {
+      method: options.method || (options.body ? 'POST' : 'GET'),
+      headers,
+      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+      credentials: 'include',
+      signal: options.signal,
+    });
+  } catch {
+    throw new ApiError('Cannot reach the kitchen server. Check your connection and try again.', 0);
+  }
+
+  const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
 
   if (!res.ok) {
-    throw new Error(data.error || 'Network request failed');
+    const message =
+      typeof data.error === 'string'
+        ? data.error
+        : typeof data.message === 'string'
+          ? data.message
+          : 'Request failed. Please try again.';
+    throw new ApiError(message, res.status);
   }
 
   return data as T;
 }
 
-// Sound alert helper using Web Audio API
 export const playSoundAlert = (type: 'chime' | 'urgent' = 'chime') => {
   if (typeof window === 'undefined') return;
+
+  if (type === 'urgent' && 'vibrate' in navigator) {
+    navigator.vibrate([180, 90, 180]);
+  }
+
   try {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioCtor =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioCtor) return;
+
+    const ctx = new AudioCtor();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
@@ -40,18 +94,20 @@ export const playSoundAlert = (type: 'chime' | 'urgent' = 'chime') => {
 
     if (type === 'urgent') {
       osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.4);
-      gain.gain.setValueAtTime(0.4, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.4);
+      osc.frequency.exponentialRampToValueAtTime(420, ctx.currentTime + 0.45);
+      gain.gain.setValueAtTime(0.35, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.45);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.45);
     } else {
-      osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15); // A5
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.5);
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+      osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.28, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.55);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.55);
     }
-  } catch {}
+  } catch {
+    // Audio is best-effort; browsers may block it until the first user gesture.
+  }
 };
