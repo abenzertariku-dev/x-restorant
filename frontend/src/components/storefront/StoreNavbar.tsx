@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { BilingualText, Category, RestaurantSetting } from '@/types';
-import { UtensilsCrossed, Globe, ShoppingBag } from 'lucide-react';
+import { UtensilsCrossed, Globe, ShoppingBag, Lock } from 'lucide-react';
 
 interface StoreNavbarProps {
   settings: RestaurantSetting | null;
@@ -104,6 +104,18 @@ export function StoreNavbar({
             <Globe className="mr-1.5 h-3.5 w-3.5 text-[#F59E0B]" />
             <span>{language === 'en' ? 'አማርኛ' : 'EN'}</span>
           </Button>
+
+          <Link href="/login">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="border-white/10 bg-[#1A1B24] text-xs font-bold text-[#CBD5E1] hover:border-[#F59E0B] hover:text-[#F8FAFC]"
+            >
+              <Lock className="mr-1.5 h-3.5 w-3.5 text-[#F59E0B]" />
+              <span className="hidden sm:inline">Staff Portal</span>
+            </Button>
+          </Link>
 
           {totalCount > 0 && (
             <Button

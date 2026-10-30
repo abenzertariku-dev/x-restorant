@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const CONNECT_OPTIONS = { serverSelectionTimeoutMS: 5000 };
+const CONNECT_OPTIONS = { serverSelectionTimeoutMS: Number(process.env.MONGODB_TIMEOUT_MS) || 15000 };
 const DNS_FALLBACK_SERVERS = (process.env.DNS_FALLBACK_SERVERS || '8.8.8.8,1.1.1.1')
   .split(',')
   .map((server) => server.trim())

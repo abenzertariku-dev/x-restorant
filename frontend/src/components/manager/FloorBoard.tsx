@@ -10,7 +10,9 @@ import {
   UtensilsCrossed,
   RefreshCw,
   ChefHat,
+  QrCode,
 } from 'lucide-react';
+import { TableQRModal } from '@/components/table/TableQRModal';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -61,6 +63,7 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
   const { t } = useLanguage();
   const [zone, setZone] = useState<Table['zone'] | 'All'>('All');
   const [selected, setSelected] = useState<Table | null>(null);
+  const [qrTable, setQrTable] = useState<Table | null>(null);
   const [busy, setBusy] = useState('');
 
   const filtered = useMemo(
@@ -204,9 +207,21 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
           {selected && (
             <>
               <DialogHeader>
-                <DialogTitle>
-                  Table {selected.tableNumber} · {selected.zone}
-                </DialogTitle>
+                <div className="flex items-center justify-between gap-3 pr-6">
+                  <DialogTitle>
+                    Table {selected.tableNumber} · {selected.zone}
+                  </DialogTitle>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    type="button"
+                    onClick={() => setQrTable(selected)}
+                    className="border-[#F59E0B]/30 bg-[#F59E0B]/10 text-[#F59E0B] hover:bg-[#F59E0B]/20 text-xs font-bold"
+                  >
+                    <QrCode className="mr-1.5 h-3.5 w-3.5" />
+                    <span>View / Print QR</span>
+                  </Button>
+                </div>
               </DialogHeader>
 
               <div className="mt-4 space-y-4 text-xs">
@@ -335,6 +350,14 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
           )}
         </DialogContent>
       </Dialog>
+
+      <TableQRModal
+        open={!!qrTable}
+        tableNumber={qrTable?.tableNumber || null}
+        zone={qrTable?.zone}
+        capacity={qrTable?.capacity}
+        onClose={() => setQrTable(null)}
+      />
     </div>
   );
 }

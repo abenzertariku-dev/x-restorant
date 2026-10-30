@@ -107,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setToken(null);
       setUser(null);
-      router.push('/api/staff');
+      router.push('/login');
     }
   }, [router]);
 

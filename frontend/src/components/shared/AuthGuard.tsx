@@ -18,7 +18,7 @@ export function AuthGuard({ roles, children }: AuthGuardProps) {
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      router.replace('/api/staff');
+      router.replace('/login');
       return;
     }
     if (roles && !roles.includes(user.role)) {

@@ -21,12 +21,24 @@ export const setToken = (token: string | null) => {
   else window.localStorage.removeItem(TOKEN_KEY);
 };
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || '/api').replace(/\/+$/, '');
-
 const resolveUrl = (path: string): string => {
   if (/^https?:\/\//i.test(path)) return path;
-  const clean = path.startsWith('/api') ? path.slice(4) : path;
-  return `${API_BASE}${clean.startsWith('/') ? clean : `/${clean}`}`;
+
+  // Ensure path starts with /api
+  const apiPath = path.startsWith('/api') ? path : `/api${path.startsWith('/') ? path : `/${path}`}`;
+
+  // If NEXT_PUBLIC_API_URL is configured, use it as the base origin
+  const envApi = process.env.NEXT_PUBLIC_API_URL;
+  if (envApi && /^https?:\/\//i.test(envApi)) {
+    const base = envApi.replace(/\/+$/, '');
+    if (base.endsWith('/api')) {
+      const sub = apiPath.slice(4);
+      return `${base}${sub.startsWith('/') ? sub : `/${sub}`}`;
+    }
+    return `${base}${apiPath}`;
+  }
+
+  return apiPath;
 };
 
 export interface ApiOptions {
