@@ -14,7 +14,9 @@ import { StoreCheckoutModal, type CheckoutPayload } from '@/components/storefron
 import { OrderTracker, type TrackingInfo } from '@/components/storefront/OrderTracker';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Radio, UtensilsCrossed, Bike, Clock } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState, ErrorState } from '@/components/shared/EmptyState';
+import { Radio, UtensilsCrossed, Bike, Clock, SearchX, RefreshCw } from 'lucide-react';
 
 const TRACKING_KEY = 'xr_last_order';
 
@@ -221,7 +223,7 @@ export default function HomePage() {
   const closeTracker = () => setTracking(null);
 
   return (
-    <div className="min-h-screen bg-[#0F1015] text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
+    <div className="min-h-screen bg-[#F6F7F9] text-[#334155] selection:bg-[#F59E0B] selection:text-[#0F1015]">
       <StoreNavbar
         settings={settings}
         categories={categories}
@@ -242,7 +244,7 @@ export default function HomePage() {
       {lastOrder && !tracking && (
         <div className="border-b border-emerald-500/20 bg-emerald-500/10">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-2.5 text-xs sm:px-6">
-            <span className="flex items-center gap-2 text-emerald-300">
+            <span className="flex items-center gap-2 text-emerald-700">
               <Radio className="h-3.5 w-3.5 animate-pulse" />
               Order #{lastOrder.orderNumber} · {t('liveTracking')}
             </span>
@@ -250,7 +252,7 @@ export default function HomePage() {
               size="sm"
               variant="outline"
               onClick={() => setTracking(lastOrder)}
-              className="h-7 rounded-full border-emerald-500/30 bg-emerald-500/10 px-3 text-[10px] font-bold text-emerald-300 hover:bg-emerald-500/20"
+              className="h-7 rounded-full border-emerald-500/30 bg-emerald-500/10 px-3 text-[10px] font-bold text-emerald-700 hover:bg-emerald-500/20"
             >
               {t('trackOrder')}
             </Button>
@@ -278,64 +280,78 @@ export default function HomePage() {
         getText={getText}
       />
 
-      <main className="mx-auto max-w-6xl px-4 py-8 pb-32 sm:px-6">
+      <main className="mx-auto max-w-6xl px-4 py-8 pb-40 sm:px-6">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
           <div>
-            <h2 className="text-2xl font-black text-[#F8FAFC]">
+            <h2 className="text-2xl font-black text-[#0F172A]">
               {activeCategory === 'all'
                 ? 'Explore the menu'
                 : getText(categories.find((c) => c._id === activeCategory)?.name)}
             </h2>
-            <p className="mt-0.5 text-xs text-[#94A3B8]">
+            <p className="mt-0.5 text-xs text-[#64748B]">
               {filteredItems.length} {filteredItems.length === 1 ? 'dish' : 'dishes'}
               {fastingOnly ? ' · fasting friendly' : ''}
             </p>
           </div>
-          <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+          <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
             <span className="flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 text-[#F59E0B]" /> 30–45 min
+              <Clock className="h-3.5 w-3.5 text-[#B45309]" /> 30–45 min
             </span>
             <span className="flex items-center gap-1.5">
-              <Bike className="h-3.5 w-3.5 text-[#F59E0B]" /> Addis delivery
+              <Bike className="h-3.5 w-3.5 text-[#B45309]" /> Addis delivery
             </span>
           </div>
         </div>
 
         {loading ? (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            role="status"
+            aria-label="Loading menu"
+            className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className="h-80 animate-pulse rounded-2xl border border-white/5 bg-[#171821]"
-              />
+                className="space-y-4 rounded-2xl border border-slate-200 bg-[#FFFFFF] p-5"
+              >
+                <Skeleton className="h-40 w-full rounded-xl sm:h-44" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-2/3" />
+                <div className="flex items-center justify-between pt-2">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-8 w-20 rounded-full" />
+                </div>
+              </div>
             ))}
           </div>
         ) : loadError ? (
-          <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-8 text-center">
-            <p className="text-sm font-bold text-rose-400">{loadError}</p>
-            <Button onClick={() => loadMenu()} className="mt-4" variant="outline">
-              Try again
-            </Button>
-          </div>
+          <ErrorState
+            title="We couldn't load the menu"
+            message={loadError}
+            onRetry={() => {
+              setLoading(true);
+              loadMenu();
+            }}
+          />
         ) : filteredItems.length === 0 ? (
-          <div className="rounded-2xl border border-white/5 bg-[#171821] p-12 text-center">
-            <span className="text-5xl">🍽️</span>
-            <h3 className="mt-4 text-lg font-black text-[#F8FAFC]">No dishes found</h3>
-            <p className="mt-1 text-xs text-[#94A3B8]">
-              Try a different category, search term, or turn off the fasting filter.
-            </p>
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => {
-                setSearchQuery('');
-                setFastingOnly(false);
-                setActiveCategory('all');
-              }}
-            >
-              Clear filters
-            </Button>
-          </div>
+          <EmptyState
+            icon={SearchX}
+            title="No dishes found"
+            description="Try a different category, search term, or turn off the fasting filter."
+            action={
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSearchQuery('');
+                  setFastingOnly(false);
+                  setActiveCategory('all');
+                }}
+              >
+                <RefreshCw className="mr-1.5 h-3.5 w-3.5" /> Clear filters
+              </Button>
+            }
+          />
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filteredItems.map((item) => (
@@ -351,17 +367,17 @@ export default function HomePage() {
         )}
       </main>
 
-      <footer className="border-t border-white/5 bg-[#14151D]">
+      <footer className="border-t border-slate-200 bg-[#FFFFFF]">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-center sm:flex-row sm:px-6 sm:text-left">
           <div className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F59E0B] text-[#0F1015]">
               <UtensilsCrossed className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-sm font-extrabold text-[#F8FAFC]">
+              <p className="text-sm font-extrabold text-[#0F172A]">
                 {getText(settings?.name) || 'X-RESTORANT'}
               </p>
-              <p className="text-[10px] text-[#64748B]">
+              <p className="text-[10px] text-[#94A3B8]">
                 {getText(settings?.intro) || 'Fresh Ethiopian flavors, delivered hot.'}
               </p>
             </div>
@@ -369,7 +385,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <Badge variant="success">Open now</Badge>
             {settings?.wifiName && (
-              <span className="text-[10px] text-[#64748B]">WiFi: {settings.wifiName}</span>
+              <span className="text-[10px] text-[#94A3B8]">WiFi: {settings.wifiName}</span>
             )}
           </div>
         </div>

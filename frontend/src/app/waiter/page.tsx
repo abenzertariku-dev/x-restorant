@@ -11,12 +11,13 @@ import {
   Clock,
   XCircle,
   AlertTriangle,
-  Loader2,
+
   Users,
   ArrowRight,
 } from 'lucide-react';
 import { AuthGuard } from '@/components/shared/AuthGuard';
 import { PortalHeader } from '@/components/shared/PortalHeader';
+import { PortalLoading } from '@/components/shared/LoadingState';
 import { TableOrderModal } from '@/components/waiter/TableOrderModal';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -201,7 +202,7 @@ function WaiterStation() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F1015] text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
+    <div className="min-h-screen bg-[#F6F7F9] text-[#334155] selection:bg-[#F59E0B] selection:text-[#0F1015]">
       <div className="mx-auto w-full max-w-[1500px] p-4 pb-28 sm:p-6 lg:p-8">
         <PortalHeader
           title="Waiter Floor Service"
@@ -221,13 +222,13 @@ function WaiterStation() {
         </PortalHeader>
 
         {error && (
-          <div className="mb-4 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-400">
+          <div className="mb-4 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-600">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
             <span className="flex-1">{error}</span>
             <button
               type="button"
               onClick={() => setError('')}
-              className="cursor-pointer text-rose-300 hover:text-white"
+              className="cursor-pointer text-rose-700 hover:text-slate-900"
             >
               Dismiss
             </button>
@@ -235,10 +236,7 @@ function WaiterStation() {
         )}
 
         {loading ? (
-          <div className="flex min-h-[55vh] flex-col items-center justify-center gap-3 text-[#94A3B8]">
-            <Loader2 className="h-8 w-8 animate-spin text-[#F59E0B]" />
-            <p className="text-xs font-bold uppercase tracking-widest">Loading floor…</p>
-          </div>
+          <PortalLoading label="Loading floor" />
         ) : (
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -247,34 +245,34 @@ function WaiterStation() {
                   label: 'Calling Waiter',
                   value: calls.length,
                   icon: Bell,
-                  tone: 'text-rose-400',
+                  tone: 'text-rose-600',
                 },
                 {
                   label: 'Bill Requests',
                   value: bills.length,
                   icon: Receipt,
-                  tone: 'text-[#F59E0B]',
+                  tone: 'text-[#B45309]',
                 },
                 {
                   label: 'Pending Approval',
                   value: pendingOrders.length,
                   icon: Clock,
-                  tone: 'text-orange-400',
+                  tone: 'text-orange-600',
                 },
                 {
                   label: 'Ready to Serve',
                   value: readyOrders.length,
                   icon: ChefHat,
-                  tone: 'text-emerald-400',
+                  tone: 'text-emerald-600',
                 },
               ].map((stat) => (
                 <Card key={stat.label} className="p-4">
                   <div className="flex items-center justify-between gap-2">
                     <div>
-                      <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                      <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                         {stat.label}
                       </p>
-                      <p className="mt-1 text-lg font-black text-[#F8FAFC]">{stat.value}</p>
+                      <p className="mt-1 text-lg font-black text-[#0F172A]">{stat.value}</p>
                     </div>
                     <stat.icon className={`h-5 w-5 ${stat.tone}`} />
                   </div>
@@ -285,7 +283,7 @@ function WaiterStation() {
             {(calls.length > 0 || bills.length > 0) && (
               <Card className="border-[#F59E0B]/30 bg-[#F59E0B]/[0.05] p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="flex items-center gap-2 text-xs font-extrabold text-[#F59E0B]">
+                  <p className="flex items-center gap-2 text-xs font-extrabold text-[#B45309]">
                     <Bell className="h-4 w-4 animate-pulse" /> Guest requests need attention
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -294,7 +292,7 @@ function WaiterStation() {
                         key={table._id}
                         type="button"
                         onClick={() => setSelectedNumber(table.tableNumber)}
-                        className="cursor-pointer rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-[11px] font-bold text-rose-300 hover:bg-rose-500/20"
+                        className="cursor-pointer rounded-lg border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-[11px] font-bold text-rose-700 hover:bg-rose-500/20"
                       >
                         Table {table.tableNumber} · Call
                       </button>
@@ -304,7 +302,7 @@ function WaiterStation() {
                         key={table._id}
                         type="button"
                         onClick={() => setSelectedNumber(table.tableNumber)}
-                        className="cursor-pointer rounded-lg border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-2.5 py-1.5 text-[11px] font-bold text-[#F59E0B] hover:bg-[#F59E0B]/20"
+                        className="cursor-pointer rounded-lg border border-[#F59E0B]/30 bg-[#F59E0B]/10 px-2.5 py-1.5 text-[11px] font-bold text-[#B45309] hover:bg-[#F59E0B]/20"
                       >
                         Table {table.tableNumber} · Bill
                       </button>
@@ -317,7 +315,7 @@ function WaiterStation() {
             {pendingOrders.length > 0 && (
               <Card className="border-[#F59E0B]/25 p-5">
                 <div className="mb-3 flex items-center justify-between">
-                  <h2 className="flex items-center gap-2 text-base font-extrabold text-[#F59E0B]">
+                  <h2 className="flex items-center gap-2 text-base font-extrabold text-[#B45309]">
                     <Clock className="h-5 w-5" /> Orders Waiting for Approval
                   </h2>
                   <Badge variant="warning">{pendingOrders.length}</Badge>
@@ -326,13 +324,13 @@ function WaiterStation() {
                   {pendingOrders.map((order) => (
                     <div
                       key={order._id}
-                      className="rounded-xl border border-white/5 bg-[#1D1E2A] p-3.5"
+                      className="rounded-xl border border-slate-200 bg-[#F1F5F9] p-3.5"
                     >
-                      <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                        <span className="font-mono text-xs font-black text-[#F59E0B]">
+                      <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <span className="font-mono text-xs font-black text-[#B45309]">
                           #{order.orderNumber}
                         </span>
-                        <span className="text-[10px] font-bold text-[#94A3B8]">
+                        <span className="text-[10px] font-bold text-[#64748B]">
                           {order.type === 'dine_in'
                             ? `Table ${order.tableNumber}`
                             : order.type.replace('_', ' ')}
@@ -341,17 +339,17 @@ function WaiterStation() {
                       <div className="my-2 space-y-1 text-xs">
                         {order.items.map((item, i) => (
                           <div key={`${item.menuItem}-${i}`} className="flex justify-between gap-2">
-                            <span className="text-[#CBD5E1]">
+                            <span className="text-[#334155]">
                               {item.qty}× {getText(item.name)}
                             </span>
-                            <span className="font-mono text-[#94A3B8]">
+                            <span className="font-mono text-[#64748B]">
                               {formatETB(item.qty * item.price)}
                             </span>
                           </div>
                         ))}
                       </div>
-                      <div className="flex items-center justify-between border-t border-white/5 pt-2">
-                        <span className="font-mono text-xs font-black text-[#F8FAFC]">
+                      <div className="flex items-center justify-between border-t border-slate-200 pt-2">
+                        <span className="font-mono text-xs font-black text-[#0F172A]">
                           {formatETB(order.totalAmount)}
                         </span>
                         <div className="flex gap-1.5">
@@ -385,7 +383,7 @@ function WaiterStation() {
             {readyOrders.length > 0 && (
               <Card className="border-emerald-500/25 p-5">
                 <div className="mb-3 flex items-center justify-between">
-                  <h2 className="flex items-center gap-2 text-base font-extrabold text-emerald-400">
+                  <h2 className="flex items-center gap-2 text-base font-extrabold text-emerald-600">
                     <ChefHat className="h-5 w-5" /> Ready for Pickup
                   </h2>
                   <Badge variant="success">{readyOrders.length}</Badge>
@@ -397,16 +395,16 @@ function WaiterStation() {
                       className="flex items-center justify-between gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] p-3.5"
                     >
                       <div className="min-w-0">
-                        <p className="font-mono text-sm font-black text-emerald-400">
+                        <p className="font-mono text-sm font-black text-emerald-600">
                           #{order.orderNumber}
                         </p>
-                        <p className="truncate text-[11px] text-[#CBD5E1]">
+                        <p className="truncate text-[11px] text-[#334155]">
                           {order.type === 'dine_in'
                             ? `Table ${order.tableNumber}`
                             : order.customer?.name || 'Guest'}{' '}
                           · {order.items.length} items
                         </p>
-                        <p className="text-[10px] text-[#64748B]">
+                        <p className="text-[10px] text-[#94A3B8]">
                           {elapsedMinutes(order.createdAt)} min total
                         </p>
                       </div>
@@ -429,10 +427,10 @@ function WaiterStation() {
             <section>
               <div className="mb-3 flex items-center justify-between">
                 <div>
-                  <h2 className="text-base font-extrabold text-[#F8FAFC]">
+                  <h2 className="text-base font-extrabold text-[#0F172A]">
                     Dining Floor & Table Status
                   </h2>
-                  <p className="text-xs text-[#94A3B8]">
+                  <p className="text-xs text-[#64748B]">
                     Tap a table to take an order, serve food or clear the table.
                   </p>
                 </div>
@@ -458,15 +456,15 @@ function WaiterStation() {
                             ? 'border-[#F59E0B]/50 bg-[#F59E0B]/10'
                             : isOccupied
                               ? 'border-sky-500/30 bg-sky-500/5'
-                              : 'border-white/5 bg-[#171821]'
+                              : 'border-slate-200 bg-[#FFFFFF]'
                       }`}
                     >
                       <div>
                         <div className="flex items-center justify-between">
-                          <span className="text-2xl font-black text-[#F8FAFC]">
+                          <span className="text-2xl font-black text-[#0F172A]">
                             #{table.tableNumber}
                           </span>
-                          <span className="text-[9px] font-bold uppercase text-[#94A3B8]">
+                          <span className="text-[9px] font-bold uppercase text-[#64748B]">
                             {table.zone}
                           </span>
                         </div>
@@ -482,14 +480,14 @@ function WaiterStation() {
                           )}
                         </div>
                       </div>
-                      <div className="mt-3 border-t border-white/5 pt-2 text-[10px] text-[#94A3B8]">
+                      <div className="mt-3 border-t border-slate-200 pt-2 text-[10px] text-[#64748B]">
                         {activeOrders.length > 0 ? (
                           <div className="flex items-center justify-between">
                             <span>
                               <Users className="mr-1 inline h-3 w-3" />
                               {activeOrders.length} order(s)
                             </span>
-                            <span className="font-mono font-bold text-[#F8FAFC]">
+                            <span className="font-mono font-bold text-[#0F172A]">
                               {formatETB(orderTotal)}
                             </span>
                           </div>
@@ -501,7 +499,7 @@ function WaiterStation() {
                   );
                 })}
                 {tables.length === 0 && (
-                  <p className="col-span-full rounded-2xl border border-dashed border-white/10 py-12 text-center text-xs text-[#94A3B8]">
+                  <p className="col-span-full rounded-2xl border border-dashed border-slate-200 py-12 text-center text-xs text-[#64748B]">
                     No tables returned by the server.
                   </p>
                 )}

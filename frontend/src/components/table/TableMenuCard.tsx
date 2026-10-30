@@ -19,11 +19,11 @@ export function TableMenuCard({ item, quantity, onUpdateQuantity }: TableMenuCar
   const { t, getText } = useLanguage();
 
   return (
-    <Card className="border-white/5 bg-[#171821] shadow-sm transition hover:border-[#F59E0B]/40 hover:bg-[#1A1C26]">
+    <Card className="border-slate-200 bg-[#FFFFFF] shadow-sm transition hover:border-[#F59E0B]/40 hover:bg-[#F8FAFC]">
       <CardContent className="flex items-center justify-between gap-3 p-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
-            <h3 className="text-sm font-bold text-[#F8FAFC]">{getText(item.name)}</h3>
+            <h3 className="text-sm font-bold text-[#0F172A]">{getText(item.name)}</h3>
             {item.isFasting && (
               <Badge variant="success" className="gap-0.5 px-1.5 py-0 text-[9px]">
                 <Leaf className="h-2.5 w-2.5" /> {t('fasting')}
@@ -36,16 +36,16 @@ export function TableMenuCard({ item, quantity, onUpdateQuantity }: TableMenuCar
             )}
           </div>
           {item.description && (
-            <p className="mt-0.5 line-clamp-2 text-xs text-[#94A3B8]">
+            <p className="mt-0.5 line-clamp-2 text-xs text-[#64748B]">
               {getText(item.description)}
             </p>
           )}
           <div className="mt-1.5 flex items-center gap-2">
-            <span className="inline-block font-mono text-xs font-black text-[#F59E0B]">
+            <span className="inline-block font-mono text-xs font-black text-[#B45309]">
               {formatETB(item.price)}
             </span>
             {!item.isAvailable && (
-              <span className="text-[10px] font-bold uppercase text-rose-400">
+              <span className="text-[10px] font-bold uppercase text-rose-600">
                 {t('outOfStock')}
               </span>
             )}
@@ -53,7 +53,7 @@ export function TableMenuCard({ item, quantity, onUpdateQuantity }: TableMenuCar
         </div>
 
         {!item.isAvailable ? (
-          <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+          <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
             {t('outOfStock')}
           </span>
         ) : quantity > 0 ? (
@@ -63,11 +63,11 @@ export function TableMenuCard({ item, quantity, onUpdateQuantity }: TableMenuCar
               size="icon"
               variant="secondary"
               onClick={() => onUpdateQuantity(-1)}
-              className="h-7 w-7 rounded-full bg-[#1E202B] text-[#F8FAFC] hover:bg-[#242634] active:scale-90"
+              className="h-7 w-7 rounded-full bg-[#F1F5F9] text-[#0F172A] hover:bg-[#E2E8F0] active:scale-90"
             >
               <Minus className="h-3 w-3" />
             </Button>
-            <span className="w-5 text-center text-xs font-black text-[#F59E0B]">{quantity}</span>
+            <span className="w-5 text-center text-xs font-black text-[#B45309]">{quantity}</span>
             <Button
               type="button"
               size="icon"

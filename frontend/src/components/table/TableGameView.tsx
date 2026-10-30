@@ -135,10 +135,10 @@ export function TableGameView() {
   const playerTwoLabel = mode === 'solo' ? t('computer') : t('playerO');
 
   return (
-    <Card className="border-white/5 bg-[#171821] shadow-xl">
+    <Card className="border-slate-200 bg-[#FFFFFF] shadow-xl">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-base font-black text-[#F8FAFC]">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F59E0B]/15 text-[#F59E0B]">
+        <CardTitle className="flex items-center gap-2 text-base font-black text-[#0F172A]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F59E0B]/15 text-[#B45309]">
             <Gamepad2 className="h-4 w-4" />
           </span>
           {t('games')}
@@ -147,23 +147,23 @@ export function TableGameView() {
       <CardContent className="space-y-4 pt-1">
         {!mode ? (
           <div className="space-y-3">
-            <p className="text-center text-xs font-bold text-[#94A3B8]">{t('chooseMode')}</p>
+            <p className="text-center text-xs font-bold text-[#64748B]">{t('chooseMode')}</p>
 
             <button
               type="button"
               onClick={() => chooseMode('solo')}
               className="flex w-full items-center gap-3 rounded-2xl border border-[#F59E0B]/30 bg-[#F59E0B]/10 p-4 text-left transition hover:border-[#F59E0B]/60 hover:bg-[#F59E0B]/15"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#F59E0B]/15 text-[#F59E0B]">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#F59E0B]/15 text-[#B45309]">
                 <UserRound className="h-5 w-5" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-black text-[#F8FAFC]">{t('soloPlay')}</span>
-                <span className="mt-0.5 block text-[11px] font-semibold text-[#94A3B8]">
+                <span className="block text-sm font-black text-[#0F172A]">{t('soloPlay')}</span>
+                <span className="mt-0.5 block text-[11px] font-semibold text-[#64748B]">
                   {t('vsComputer')}
                 </span>
               </span>
-              <Bot className="h-5 w-5 shrink-0 text-[#F59E0B]" />
+              <Bot className="h-5 w-5 shrink-0 text-[#B45309]" />
             </button>
 
             <button
@@ -171,12 +171,12 @@ export function TableGameView() {
               onClick={() => chooseMode('duo')}
               className="flex w-full items-center gap-3 rounded-2xl border border-sky-500/25 bg-sky-500/10 p-4 text-left transition hover:border-sky-400/60 hover:bg-sky-500/15"
             >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-500/15 text-sky-400">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sky-500/15 text-sky-600">
                 <Users className="h-5 w-5" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-black text-[#F8FAFC]">{t('twoPlayers')}</span>
-                <span className="mt-0.5 block text-[11px] font-semibold text-[#94A3B8]">
+                <span className="block text-sm font-black text-[#0F172A]">{t('twoPlayers')}</span>
+                <span className="mt-0.5 block text-[11px] font-semibold text-[#64748B]">
                   {t('sameTable')}
                 </span>
               </span>
@@ -191,25 +191,25 @@ export function TableGameView() {
                   resetBoard();
                   setMode(null);
                 }}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#94A3B8] transition hover:text-[#F8FAFC]"
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#64748B] transition hover:text-[#0F172A]"
               >
                 <ArrowLeft className="h-3.5 w-3.5" /> {t('changeMode')}
               </button>
-              <span className="rounded-full border border-white/10 bg-[#1E202B] px-2.5 py-1 text-[10px] font-bold text-[#CBD5E1]">
+              <span className="rounded-full border border-slate-200 bg-[#F1F5F9] px-2.5 py-1 text-[10px] font-bold text-[#334155]">
                 {mode === 'solo' ? t('soloPlay') : t('twoPlayers')}
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-center text-[10px] font-bold">
-              <div className="flex items-center justify-center gap-1.5 rounded-xl border border-[#F59E0B]/25 bg-[#F59E0B]/10 px-2 py-2 text-[#F59E0B]">
+              <div className="flex items-center justify-center gap-1.5 rounded-xl border border-[#F59E0B]/25 bg-[#F59E0B]/10 px-2 py-2 text-[#B45309]">
                 <span className="text-sm font-black">X</span> {playerOneLabel}
               </div>
-              <div className="flex items-center justify-center gap-1.5 rounded-xl border border-sky-500/25 bg-sky-500/10 px-2 py-2 text-sky-400">
+              <div className="flex items-center justify-center gap-1.5 rounded-xl border border-sky-500/25 bg-sky-500/10 px-2 py-2 text-sky-600">
                 <span className="text-sm font-black">O</span> {playerTwoLabel}
               </div>
             </div>
 
-            <p className="text-center text-xs font-bold text-[#94A3B8]">{statusText}</p>
+            <p className="text-center text-xs font-bold text-[#64748B]">{statusText}</p>
 
             <div className="mx-auto grid max-w-xs grid-cols-3 gap-2">
               {board.map((cell, index) => (
@@ -220,10 +220,10 @@ export function TableGameView() {
                   disabled={aiThinking || !!winner || full}
                   className={`flex aspect-square items-center justify-center rounded-2xl border text-3xl font-black transition disabled:cursor-not-allowed ${
                     cell === 'X'
-                      ? 'border-[#F59E0B]/40 bg-[#F59E0B]/10 text-[#F59E0B]'
+                      ? 'border-[#F59E0B]/40 bg-[#F59E0B]/10 text-[#B45309]'
                       : cell === 'O'
-                        ? 'border-sky-500/40 bg-sky-500/10 text-sky-400'
-                        : 'border-white/5 bg-[#1E202B] text-[#F8FAFC] hover:border-[#F59E0B]/40'
+                        ? 'border-sky-500/40 bg-sky-500/10 text-sky-600'
+                        : 'border-slate-200 bg-[#F1F5F9] text-[#0F172A] hover:border-[#F59E0B]/40'
                   }`}
                 >
                   {cell}
@@ -235,7 +235,7 @@ export function TableGameView() {
               type="button"
               variant="outline"
               onClick={resetBoard}
-              className="w-full border-white/10 bg-[#1E202B] font-bold text-[#E2E8F0]"
+              className="w-full border-slate-200 bg-[#F1F5F9] font-bold text-[#E2E8F0]"
             >
               <RotateCcw className="mr-1.5 h-4 w-4" /> {t('playAgain')}
             </Button>

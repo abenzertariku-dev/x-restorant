@@ -103,9 +103,9 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
-          { label: 'Available', value: summary.available, icon: CheckCircle2, tone: 'text-emerald-400' },
-          { label: 'Seated', value: summary.occupied, icon: Users, tone: 'text-sky-400' },
-          { label: 'Guest Alerts', value: summary.alerts, icon: BellRing, tone: 'text-[#F59E0B]' },
+          { label: 'Available', value: summary.available, icon: CheckCircle2, tone: 'text-emerald-600' },
+          { label: 'Seated', value: summary.occupied, icon: Users, tone: 'text-sky-600' },
+          { label: 'Guest Alerts', value: summary.alerts, icon: BellRing, tone: 'text-[#B45309]' },
           {
             label: 'Open Bill Value',
             value: formatETB(summary.openRevenue),
@@ -116,10 +116,10 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
           <Card key={item.label} className="p-4">
             <div className="flex items-center justify-between gap-2">
               <div>
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                   {item.label}
                 </p>
-                <p className="mt-1 text-lg font-black text-[#F8FAFC]">{item.value}</p>
+                <p className="mt-1 text-lg font-black text-[#0F172A]">{item.value}</p>
               </div>
               <item.icon className={`h-5 w-5 ${item.tone}`} />
             </div>
@@ -136,7 +136,7 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
             className={`shrink-0 cursor-pointer rounded-lg px-3 py-1.5 text-[11px] font-bold transition ${
               zone === z
                 ? 'bg-[#F59E0B] text-[#0F1015]'
-                : 'border border-white/5 bg-[#14151D] text-[#94A3B8] hover:text-[#F8FAFC]'
+                : 'border border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
             {z}
@@ -159,10 +159,10 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                     {table.zone} · {table.capacity} seats
                   </p>
-                  <h3 className="mt-0.5 text-2xl font-black text-[#F8FAFC]">
+                  <h3 className="mt-0.5 text-2xl font-black text-[#0F172A]">
                     Table {table.tableNumber}
                   </h3>
                 </div>
@@ -174,18 +174,18 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
                 {pending > 0 && <Badge variant="warning">{pending} to approve</Badge>}
               </div>
 
-              <div className="mt-3 flex items-end justify-between border-t border-white/5 pt-2.5">
-                <div className="text-[11px] text-[#94A3B8]">
+              <div className="mt-3 flex items-end justify-between border-t border-slate-200 pt-2.5">
+                <div className="text-[11px] text-[#64748B]">
                   {orders.length ? `${orders.length} open order(s)` : 'No open orders'}
                 </div>
-                <div className="font-mono text-xs font-black text-[#F8FAFC]">
+                <div className="font-mono text-xs font-black text-[#0F172A]">
                   {orders.length ? formatETB(total) : '—'}
                 </div>
               </div>
 
               {(table.status === 'call_waiter' || table.status === 'bill_requested') &&
                 table.lastCallAt && (
-                  <p className="mt-1.5 text-[10px] font-bold text-[#F59E0B]">
+                  <p className="mt-1.5 text-[10px] font-bold text-[#B45309]">
                     {elapsedMinutes(table.status === 'call_waiter' ? table.lastCallAt : table.lastBillRequestAt || table.lastCallAt)} min ago
                   </p>
                 )}
@@ -193,7 +193,7 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
           );
         })}
         {filtered.length === 0 && (
-          <div className="col-span-full rounded-2xl border border-dashed border-white/10 py-14 text-center text-xs text-[#94A3B8]">
+          <div className="col-span-full rounded-2xl border border-dashed border-slate-200 py-14 text-center text-xs text-[#64748B]">
             No tables in this zone.
           </div>
         )}
@@ -216,7 +216,7 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
                     variant="outline"
                     type="button"
                     onClick={() => setQrTable(selected)}
-                    className="border-[#F59E0B]/30 bg-[#F59E0B]/10 text-[#F59E0B] hover:bg-[#F59E0B]/20 text-xs font-bold"
+                    className="border-[#F59E0B]/30 bg-[#F59E0B]/10 text-[#B45309] hover:bg-[#F59E0B]/20 text-xs font-bold"
                   >
                     <QrCode className="mr-1.5 h-3.5 w-3.5" />
                     <span>View / Print QR</span>
@@ -244,14 +244,14 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
                   {(selected.orders || []).map((order) => (
                     <div
                       key={order._id}
-                      className="rounded-xl border border-white/5 bg-[#14151D] p-3"
+                      className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-3"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div>
-                          <p className="font-mono text-sm font-black text-[#F59E0B]">
+                          <p className="font-mono text-sm font-black text-[#B45309]">
                             #{order.orderNumber}
                           </p>
-                          <p className="text-[10px] text-[#64748B]">
+                          <p className="text-[10px] text-[#94A3B8]">
                             <Clock className="mr-1 inline h-3 w-3" />
                             {elapsedMinutes(order.createdAt)} min · {order.items.length} items
                           </p>
@@ -261,21 +261,21 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
                         </Badge>
                       </div>
 
-                      <div className="mt-2 space-y-1 border-t border-white/5 pt-2">
+                      <div className="mt-2 space-y-1 border-t border-slate-200 pt-2">
                         {order.items.map((item, i) => (
                           <div key={`${item.menuItem}-${i}`} className="flex justify-between gap-2">
-                            <span className="text-[#CBD5E1]">
+                            <span className="text-[#334155]">
                               {item.qty}× {item.name.en}
                             </span>
-                            <span className="font-mono text-[#94A3B8]">
+                            <span className="font-mono text-[#64748B]">
                               {formatETB(item.qty * item.price)}
                             </span>
                           </div>
                         ))}
                       </div>
 
-                      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-white/5 pt-2">
-                        <span className="font-mono text-sm font-black text-[#F8FAFC]">
+                      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-2">
+                        <span className="font-mono text-sm font-black text-[#0F172A]">
                           {formatETB(order.totalAmount)}
                         </span>
                         <div className="flex flex-wrap gap-1.5">
@@ -322,7 +322,7 @@ export function FloorBoard({ tables, onClearTable, onUpdateOrderStatus }: FloorB
                   ))}
 
                   {(selected.orders || []).length === 0 && (
-                    <p className="rounded-xl border border-dashed border-white/10 py-8 text-center text-xs text-[#94A3B8]">
+                    <p className="rounded-xl border border-dashed border-slate-200 py-8 text-center text-xs text-[#64748B]">
                       No open orders on this table.
                     </p>
                   )}

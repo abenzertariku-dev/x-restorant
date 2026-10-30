@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { LanguageProvider } from '@/context/LanguageContext';
@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   description: 'Digital table ordering, live kitchen dispatch, and fast home delivery in Addis Ababa.',
 };
 
+export const viewport: Viewport = {
+  themeColor: '#F6F7F9',
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -30,7 +34,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100">
+      <body className="flex min-h-dvh flex-col overflow-x-hidden bg-[#F6F7F9] text-[#334155] antialiased">
         <LanguageProvider>
           <AuthProvider>{children}</AuthProvider>
         </LanguageProvider>

@@ -61,6 +61,7 @@ export function StoreCheckoutModal({
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('telebirr');
   const [refCode, setRefCode] = useState('');
   const [copied, setCopied] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const bank = useMemo(() => {
     if (!settings?.banks?.length) return undefined;
@@ -78,16 +79,17 @@ export function StoreCheckoutModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
     if (!phone.trim()) {
-      alert('Please provide a phone number');
+      setFormError('Please provide a phone number.');
       return;
     }
     if (type === 'delivery' && !address.trim()) {
-      alert('Please provide a delivery address');
+      setFormError('Please provide a delivery address.');
       return;
     }
     if (paymentMethod !== 'cash' && !/^[A-Za-z0-9-]{6,}$/.test(refCode.trim())) {
-      alert('Please enter a valid transaction reference (at least 6 characters)');
+      setFormError('Please enter a valid transaction reference (at least 6 characters).');
       return;
     }
     onSubmit({
@@ -102,17 +104,22 @@ export function StoreCheckoutModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={t('checkout')}
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-3 backdrop-blur-sm sm:items-center sm:p-4"
+    >
       <form
         onSubmit={handleSubmit}
-        className="my-auto w-full max-w-lg rounded-3xl border border-white/10 bg-[#171821] p-6 text-[#CBD5E1] shadow-2xl sm:p-7"
+        className="my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-lg overflow-y-auto rounded-3xl border border-slate-200 bg-[#FFFFFF] p-5 text-[#334155] shadow-2xl sm:max-h-[calc(100dvh-2rem)] sm:p-7"
       >
-        <div className="flex items-start justify-between border-b border-white/5 pb-4">
+        <div className="flex items-start justify-between border-b border-slate-200 pb-4">
           <div>
-            <h3 className="text-xl font-black text-[#F8FAFC]">{t('checkout')}</h3>
-            <p className="mt-1 text-xs text-[#94A3B8]">
+            <h3 className="text-xl font-black text-[#0F172A]">{t('checkout')}</h3>
+            <p className="mt-1 text-xs text-[#64748B]">
               {t('total')}:{' '}
-              <b className="font-mono text-[#F59E0B]">{formatETB(totalPrice)}</b>
+              <b className="font-mono text-[#B45309]">{formatETB(totalPrice)}</b>
             </p>
           </div>
           <Button type="button" variant="ghost" size="icon" onClick={onClose}>
@@ -122,7 +129,7 @@ export function StoreCheckoutModal({
 
         <div className="my-5 space-y-4 text-xs">
           <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
               {t('orderType')}
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -131,8 +138,8 @@ export function StoreCheckoutModal({
                 onClick={() => setType('delivery')}
                 className={`flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition ${
                   type === 'delivery'
-                    ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#F59E0B]'
-                    : 'border-white/5 bg-[#14151D] text-[#94A3B8] hover:border-white/10'
+                    ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#B45309]'
+                    : 'border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:border-slate-200'
                 }`}
               >
                 <Bike className="h-4 w-4" /> {t('delivery')}
@@ -142,8 +149,8 @@ export function StoreCheckoutModal({
                 onClick={() => setType('takeaway')}
                 className={`flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition ${
                   type === 'takeaway'
-                    ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#F59E0B]'
-                    : 'border-white/5 bg-[#14151D] text-[#94A3B8] hover:border-white/10'
+                    ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#B45309]'
+                    : 'border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:border-slate-200'
                 }`}
               >
                 <ShoppingBag className="h-4 w-4" /> {t('takeaway')}
@@ -153,18 +160,18 @@ export function StoreCheckoutModal({
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
                 {t('fullName')}
               </label>
               <Input
                 placeholder="e.g. Almaz Tadesse"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+                className="border-slate-200 bg-[#FFFFFF] text-xs text-[#0F172A] placeholder-[#94A3B8] focus:border-[#F59E0B]"
               />
             </div>
             <div>
-              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
                 {t('phone')} *
               </label>
               <Input
@@ -173,14 +180,14 @@ export function StoreCheckoutModal({
                 placeholder="+251 9..."
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+                className="border-slate-200 bg-[#FFFFFF] text-xs text-[#0F172A] placeholder-[#94A3B8] focus:border-[#F59E0B]"
               />
             </div>
           </div>
 
           {type === 'delivery' && (
             <div>
-              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
                 {t('deliveryAddress')} *
               </label>
               <Textarea
@@ -189,25 +196,25 @@ export function StoreCheckoutModal({
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 rows={2}
-                className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+                className="border-slate-200 bg-[#FFFFFF] text-xs text-[#0F172A] placeholder-[#94A3B8] focus:border-[#F59E0B]"
               />
             </div>
           )}
 
           <div>
-            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
               {t('notes')} ({t('optional')})
             </label>
             <Input
               placeholder={t('specialInstructions')}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="border-white/10 bg-[#14151D] text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+              className="border-slate-200 bg-[#FFFFFF] text-xs text-[#0F172A] placeholder-[#94A3B8] focus:border-[#F59E0B]"
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
               {t('payment')}
             </label>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -218,8 +225,8 @@ export function StoreCheckoutModal({
                   onClick={() => setPaymentMethod(m.id)}
                   className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center text-[10px] font-bold transition ${
                     paymentMethod === m.id
-                      ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#F59E0B]'
-                      : 'border-white/5 bg-[#14151D] text-[#94A3B8] hover:border-white/10'
+                      ? 'border-[#F59E0B] bg-[#F59E0B]/10 text-[#B45309]'
+                      : 'border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:border-slate-200'
                   }`}
                 >
                   <span className="text-base">{m.icon}</span>
@@ -251,7 +258,7 @@ export function StoreCheckoutModal({
           )}
 
           {paymentMethod === 'cash' && (
-            <p className="rounded-xl border border-white/5 bg-[#14151D] p-3 text-[10px] text-[#94A3B8]">
+            <p className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-3 text-[10px] text-[#64748B]">
               Pay {type === 'delivery' ? 'the courier on delivery' : 'at the counter when you pick up'}.
               Please have the exact amount ready where possible.
             </p>
@@ -259,7 +266,7 @@ export function StoreCheckoutModal({
 
           {paymentMethod !== 'cash' && (
             <div>
-              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
                 {t('referenceCode')} *
               </label>
               <Input
@@ -267,38 +274,47 @@ export function StoreCheckoutModal({
                 placeholder="e.g. TLB8394829"
                 value={refCode}
                 onChange={(e) => setRefCode(e.target.value)}
-                className="border-white/10 bg-[#14151D] font-mono text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+                className="border-slate-200 bg-[#FFFFFF] font-mono text-xs text-[#0F172A] placeholder-[#94A3B8] focus:border-[#F59E0B]"
               />
-              <p className="mt-1 text-[10px] text-[#64748B]">
+              <p className="mt-1 text-[10px] text-[#94A3B8]">
                 The cashier verifies this reference before the order is settled.
               </p>
             </div>
           )}
 
-          <div className="rounded-2xl border border-white/5 bg-[#14151D] p-3">
-            <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
-              <Landmark className="h-3 w-3 text-[#F59E0B]" /> {t('subtotal')}
+          <div className="rounded-2xl border border-slate-200 bg-[#FFFFFF] p-3">
+            <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+              <Landmark className="h-3 w-3 text-[#B45309]" /> {t('subtotal')}
             </p>
             <div className="max-h-32 space-y-1.5 overflow-y-auto pr-1">
               {lines.map((line) => (
                 <div key={line.id} className="flex justify-between text-[11px]">
-                  <span className="text-[#CBD5E1]">
+                  <span className="text-[#334155]">
                     {line.qty} × {line.name}
                   </span>
-                  <span className="font-mono text-[#94A3B8]">
+                  <span className="font-mono text-[#64748B]">
                     {formatETB(line.price * line.qty)}
                   </span>
                 </div>
               ))}
             </div>
-            <div className="mt-2 flex justify-between border-t border-white/5 pt-2 text-xs font-black text-[#F8FAFC]">
+            <div className="mt-2 flex justify-between border-t border-slate-200 pt-2 text-xs font-black text-[#0F172A]">
               <span>{t('total')}</span>
-              <span className="text-[#F59E0B]">{formatETB(totalPrice)}</span>
+              <span className="text-[#B45309]">{formatETB(totalPrice)}</span>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-2.5 pt-1">
+        {formError && (
+          <p
+            role="alert"
+            className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-[11px] font-semibold text-rose-600"
+          >
+            {formError}
+          </p>
+        )}
+
+        <div className="flex flex-col-reverse gap-2.5 pt-1 sm:flex-row">
           <Button
             type="submit"
             disabled={busy}
@@ -310,7 +326,7 @@ export function StoreCheckoutModal({
             type="button"
             variant="ghost"
             onClick={onClose}
-            className="rounded-full border border-white/10 bg-white/5 px-5 py-3.5 text-xs font-bold text-[#94A3B8] hover:text-[#F8FAFC]"
+            className="rounded-full border border-slate-200 bg-slate-100 px-5 py-3.5 text-xs font-bold text-[#64748B] hover:text-[#0F172A]"
           >
             {t('cancel')}
           </Button>
@@ -338,23 +354,23 @@ function PaymentDetails({
   return (
     <div
       className={`rounded-xl border p-3 ${
-        accent ? 'border-[#F59E0B]/30 bg-[#F59E0B]/5' : 'border-white/5 bg-[#14151D]'
+        accent ? 'border-[#F59E0B]/30 bg-[#F59E0B]/5' : 'border-slate-200 bg-[#FFFFFF]'
       }`}
     >
-      <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+      <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
         {title}
       </span>
       <div className="mt-1 flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <p className="truncate font-mono text-sm font-black text-[#F8FAFC]">{primary}</p>
-          {secondary && <p className="truncate text-[10px] text-[#94A3B8]">{secondary}</p>}
+          <p className="truncate font-mono text-sm font-black text-[#0F172A]">{primary}</p>
+          {secondary && <p className="truncate text-[10px] text-[#64748B]">{secondary}</p>}
         </div>
         <Button
           type="button"
           size="sm"
           variant="outline"
           onClick={onCopy}
-          className="h-7 shrink-0 rounded-md border-white/10 bg-[#1A1B24] px-2.5 py-1 text-[10px] font-bold text-[#F59E0B]"
+          className="h-7 shrink-0 rounded-md border-slate-200 bg-[#F1F5F9] px-2.5 py-1 text-[10px] font-bold text-[#B45309]"
         >
           <Copy className="mr-1 h-3 w-3" />
           {copied ? 'Copied!' : 'Copy'}

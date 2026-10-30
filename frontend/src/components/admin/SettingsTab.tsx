@@ -94,16 +94,16 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
     <form onSubmit={submit} className="space-y-5">
       <Card className="p-6">
         <div className="mb-5 flex items-center gap-2">
-          <Building2 className="h-5 w-5 text-[#F59E0B]" />
+          <Building2 className="h-5 w-5 text-[#B45309]" />
           <div>
-            <h3 className="text-base font-extrabold text-[#F8FAFC]">Restaurant Profile</h3>
-            <p className="text-xs text-[#94A3B8]">Bilingual brand content shown across the menu.</p>
+            <h3 className="text-base font-extrabold text-[#0F172A]">Restaurant Profile</h3>
+            <p className="text-xs text-[#64748B]">Bilingual brand content shown across the menu.</p>
           </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Restaurant Name (English)
             </label>
             <Input
@@ -115,7 +115,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Restaurant Name (አማርኛ)
             </label>
             <Input
@@ -127,7 +127,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Intro (English)
             </label>
             <Textarea
@@ -139,7 +139,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Intro (አማርኛ)
             </label>
             <Textarea
@@ -155,15 +155,15 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
 
       <Card className="p-6">
         <div className="mb-5 flex items-center gap-2">
-          <Wifi className="h-5 w-5 text-[#F59E0B]" />
+          <Wifi className="h-5 w-5 text-[#B45309]" />
           <div>
-            <h3 className="text-base font-extrabold text-[#F8FAFC]">Guest WiFi</h3>
-            <p className="text-xs text-[#94A3B8]">Shown on every QR table page.</p>
+            <h3 className="text-base font-extrabold text-[#0F172A]">Guest WiFi</h3>
+            <p className="text-xs text-[#64748B]">Shown on every QR table page.</p>
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Network Name
             </label>
             <Input
@@ -172,7 +172,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Password
             </label>
             <Input
@@ -181,7 +181,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Tables Count
             </label>
             <Input
@@ -198,10 +198,10 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
 
       <Card className="p-6">
         <div className="mb-5 flex items-center gap-2">
-          <Smartphone className="h-5 w-5 text-[#F59E0B]" />
+          <Smartphone className="h-5 w-5 text-[#B45309]" />
           <div>
-            <h3 className="text-base font-extrabold text-[#F8FAFC]">Telebirr & Bank Payments</h3>
-            <p className="text-xs text-[#94A3B8]">
+            <h3 className="text-base font-extrabold text-[#0F172A]">Telebirr & Bank Payments</h3>
+            <p className="text-xs text-[#64748B]">
               Customer-facing payment channels used during checkout and cashier verification.
             </p>
           </div>
@@ -209,7 +209,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
 
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Telebirr Merchant Code
             </label>
             <Input
@@ -222,7 +222,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
             />
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Telebirr Merchant Name
             </label>
             <Input
@@ -239,10 +239,10 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
           {form.banks.map((bank, index) => (
             <div
               key={`${index}-${bank.bankName}`}
-              className="grid gap-3 rounded-2xl border border-white/5 bg-[#14151D] p-4 md:grid-cols-[1.1fr_1fr_1fr_auto]"
+              className="grid gap-3 rounded-2xl border border-slate-200 bg-[#FFFFFF] p-4 md:grid-cols-[1.1fr_1fr_1fr_auto]"
             >
               <div>
-                <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                   Bank Name
                 </label>
                 <Input
@@ -252,7 +252,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                   Account Name
                 </label>
                 <Input
@@ -261,7 +261,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
                 />
               </div>
               <div>
-                <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                   Account Number
                 </label>
                 <Input
@@ -288,7 +288,7 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
           </Button>
         </div>
 
-        <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-xl border border-white/5 bg-[#14151D] p-4">
+        <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-[#FFFFFF] p-4">
           <input
             type="checkbox"
             checked={form.directKitchenRouting}
@@ -298,10 +298,10 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
             className="mt-0.5 h-4 w-4 cursor-pointer accent-[#F59E0B]"
           />
           <span>
-            <span className="block text-xs font-bold text-[#F8FAFC]">
+            <span className="block text-xs font-bold text-[#0F172A]">
               Direct kitchen routing for QR orders
             </span>
-            <span className="text-[11px] text-[#94A3B8]">
+            <span className="text-[11px] text-[#64748B]">
               When enabled, customer QR orders skip waiter approval and go straight to the KDS.
             </span>
           </span>
@@ -309,12 +309,12 @@ export function SettingsTab({ settings, onSave }: SettingsTabProps) {
       </Card>
 
       {message && (
-        <p className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs font-semibold text-emerald-400">
+        <p className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs font-semibold text-emerald-600">
           {message}
         </p>
       )}
       {error && (
-        <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-400">
+        <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-600">
           {error}
         </p>
       )}

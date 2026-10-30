@@ -22,7 +22,8 @@ import { OrdersTab } from '@/components/admin/OrdersTab';
 import { StaffTab } from '@/components/admin/StaffTab';
 import { SettingsTab } from '@/components/admin/SettingsTab';
 import { AddDishModal } from '@/components/admin/AddDishModal';
-import { Loader2, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { PortalLoading } from '@/components/shared/LoadingState';
 
 type AdminTab = 'analytics' | 'menu' | 'orders' | 'staff' | 'settings';
 
@@ -247,7 +248,7 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0F1015] text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
+    <div className="flex min-h-screen bg-[#F6F7F9] text-[#334155] selection:bg-[#F59E0B] selection:text-[#0F1015]">
       <Sidebar
         tab={tab}
         setTab={setTab}
@@ -269,13 +270,13 @@ function AdminDashboard() {
 
         <main className="min-w-0 flex-1 space-y-5 p-4 sm:p-6 lg:p-8">
           {error && (
-            <div className="flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-400">
+            <div className="flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-600">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
               <span className="flex-1">{error}</span>
               <button
                 type="button"
                 onClick={() => setError('')}
-                className="cursor-pointer text-rose-300 hover:text-white"
+                className="cursor-pointer text-rose-700 hover:text-slate-900"
               >
                 Dismiss
               </button>
@@ -283,10 +284,7 @@ function AdminDashboard() {
           )}
 
           {loading ? (
-            <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-[#94A3B8]">
-              <Loader2 className="h-8 w-8 animate-spin text-[#F59E0B]" />
-              <p className="text-xs font-bold uppercase tracking-widest">Loading operations…</p>
-            </div>
+            <PortalLoading label="Loading operations" />
           ) : (
             <>
               {tab === 'analytics' && (

@@ -9,10 +9,11 @@ import {
   ReceiptText,
   Wallet,
   AlertTriangle,
-  Loader2,
+
 } from 'lucide-react';
 import { AuthGuard } from '@/components/shared/AuthGuard';
 import { PortalHeader } from '@/components/shared/PortalHeader';
+import { PortalLoading } from '@/components/shared/LoadingState';
 import { BillList } from '@/components/cashier/BillList';
 import { SettlementDrawer } from '@/components/cashier/SettlementDrawer';
 import { ReceiptModal } from '@/components/cashier/ReceiptModal';
@@ -171,7 +172,7 @@ function CashierTerminal() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F1015] text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
+    <div className="min-h-screen bg-[#F6F7F9] text-[#334155] selection:bg-[#F59E0B] selection:text-[#0F1015]">
       <div className="mx-auto w-full max-w-[1500px] p-4 pb-24 sm:p-6 lg:p-8">
         <PortalHeader
           title="Cashier POS Terminal"
@@ -186,13 +187,13 @@ function CashierTerminal() {
         </PortalHeader>
 
         {error && (
-          <div className="mb-4 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-400">
+          <div className="mb-4 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-600">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
             <span className="flex-1">{error}</span>
             <button
               type="button"
               onClick={() => setError('')}
-              className="cursor-pointer text-rose-300 hover:text-white"
+              className="cursor-pointer text-rose-700 hover:text-slate-900"
             >
               Dismiss
             </button>
@@ -205,7 +206,7 @@ function CashierTerminal() {
               label: 'Open Bills',
               value: String(unsettled.length),
               icon: ReceiptText,
-              tone: 'text-[#F59E0B]',
+              tone: 'text-[#B45309]',
             },
             {
               label: 'Open Value',
@@ -217,22 +218,22 @@ function CashierTerminal() {
               label: 'Bill Alerts',
               value: String(stats.alerts),
               icon: BellRing,
-              tone: 'text-rose-400',
+              tone: 'text-rose-600',
             },
             {
               label: 'Collected Today',
               value: formatETB(stats.collectedToday),
               icon: Banknote,
-              tone: 'text-emerald-400',
+              tone: 'text-emerald-600',
             },
           ].map((stat) => (
             <Card key={stat.label} className="p-4">
               <div className="flex items-center justify-between gap-2">
                 <div>
-                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                     {stat.label}
                   </p>
-                  <p className="mt-1 truncate text-lg font-black text-[#F8FAFC]">{stat.value}</p>
+                  <p className="mt-1 truncate text-lg font-black text-[#0F172A]">{stat.value}</p>
                 </div>
                 <stat.icon className={`h-5 w-5 shrink-0 ${stat.tone}`} />
               </div>
@@ -241,10 +242,7 @@ function CashierTerminal() {
         </div>
 
         {loading ? (
-          <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 text-[#94A3B8]">
-            <Loader2 className="h-8 w-8 animate-spin text-[#F59E0B]" />
-            <p className="text-xs font-bold uppercase tracking-widest">Loading bills…</p>
-          </div>
+          <PortalLoading label="Loading bills" columns={2} />
         ) : (
           <div className="grid gap-6 lg:grid-cols-12">
             <BillList
@@ -266,7 +264,7 @@ function CashierTerminal() {
           </div>
         )}
 
-        <div className="mt-4 text-center text-[10px] text-[#64748B]">
+        <div className="mt-4 text-center text-[10px] text-[#94A3B8]">
           {stats.settledToday} bills settled today · strict reference verification enforced for
           Telebirr, CBE and Awash payments
         </div>

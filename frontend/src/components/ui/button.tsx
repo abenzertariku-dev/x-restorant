@@ -10,15 +10,15 @@ const buttonVariants = cva(
         default:
           'bg-[#F59E0B] text-[#0F1015] shadow-md shadow-amber-500/20 hover:bg-[#FBBF24] hover:shadow-amber-500/30',
         destructive:
-          'bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20 hover:text-rose-300',
+          'bg-rose-500/10 text-rose-600 border border-rose-500/30 hover:bg-rose-500/20 hover:text-rose-700',
         outline:
-          'border border-white/10 bg-[#1A1B24] text-[#CBD5E1] hover:border-[#F59E0B]/50 hover:text-[#F8FAFC]',
+          'border border-slate-200 bg-[#F1F5F9] text-[#334155] hover:border-[#F59E0B]/50 hover:text-[#0F172A]',
         secondary:
-          'bg-white/5 text-[#CBD5E1] hover:bg-white/10 hover:text-[#F8FAFC]',
+          'bg-slate-100 text-[#334155] hover:bg-slate-200 hover:text-[#0F172A]',
         ghost:
-          'hover:bg-white/5 hover:text-[#F8FAFC] text-[#94A3B8]',
+          'hover:bg-slate-100 hover:text-[#0F172A] text-[#64748B]',
         link:
-          'text-[#F59E0B] underline-offset-4 hover:underline',
+          'text-[#B45309] underline-offset-4 hover:underline',
         success:
           'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20 hover:bg-emerald-400',
       },

@@ -70,10 +70,10 @@ export function BillList({
     <div className="space-y-3 lg:col-span-7">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-base font-black tracking-tight text-[#F8FAFC]">
+          <h2 className="text-base font-black tracking-tight text-[#0F172A]">
             Active Bills Pending Settlement ({orders.length})
           </h2>
-          <p className="text-xs text-[#94A3B8]">
+          <p className="text-xs text-[#64748B]">
             Bills requesting the cashier are pinned to the top with an alert.
           </p>
         </div>
@@ -81,7 +81,7 @@ export function BillList({
 
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[170px] flex-1 sm:max-w-xs">
-          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#64748B]" />
+          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#94A3B8]" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -106,7 +106,7 @@ export function BillList({
               className={`flex shrink-0 cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1.5 text-[10px] font-bold transition ${
                 filter === item.key
                   ? 'bg-[#F59E0B] text-[#0F1015]'
-                  : 'border border-white/5 bg-[#14151D] text-[#94A3B8] hover:text-[#F8FAFC]'
+                  : 'border border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:text-[#0F172A]'
               }`}
             >
               <item.icon className="h-3 w-3" /> {item.label}
@@ -121,15 +121,15 @@ export function BillList({
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-24 animate-pulse rounded-2xl border border-white/5 bg-[#171821] shadow-sm"
+              className="h-24 animate-pulse rounded-2xl border border-slate-200 bg-[#FFFFFF] shadow-sm"
             />
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <Card className="p-12 text-center text-[#94A3B8]">
-          <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-400" />
-          <p className="mt-3 font-bold text-[#F8FAFC]">No bills in this view</p>
-          <p className="mt-1 text-xs text-[#94A3B8]">
+        <Card className="p-12 text-center text-[#64748B]">
+          <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600" />
+          <p className="mt-3 font-bold text-[#0F172A]">No bills in this view</p>
+          <p className="mt-1 text-xs text-[#64748B]">
             New customer bills will appear here automatically.
           </p>
         </Card>
@@ -145,16 +145,16 @@ export function BillList({
               onClick={() => onSelectOrder(order)}
               className={`cursor-pointer p-4 shadow-sm transition-all ${
                 isSelected
-                  ? 'border-[#F59E0B] bg-[#1E202B] ring-1 ring-[#F59E0B]/50'
+                  ? 'border-[#F59E0B] bg-[#F1F5F9] ring-1 ring-[#F59E0B]/50'
                   : needsBill
                     ? 'border-[#F59E0B]/40 bg-[#F59E0B]/[0.05] hover:bg-[#F59E0B]/[0.08]'
-                    : 'hover:border-white/20 hover:bg-[#1A1C26]'
+                    : 'hover:border-slate-300 hover:bg-[#F8FAFC]'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-[#F59E0B]">
+                    <span className="flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-[#B45309]">
                       <TypeIcon className="h-3 w-3" />
                       {order.type === 'dine_in'
                         ? `Table ${order.tableNumber}`
@@ -166,16 +166,16 @@ export function BillList({
                       </Badge>
                     )}
                   </div>
-                  <h3 className="text-base font-black text-[#F8FAFC]">
+                  <h3 className="text-base font-black text-[#0F172A]">
                     Order #{order.orderNumber}
                   </h3>
-                  <p className="mt-0.5 text-[10px] text-[#64748B]">
+                  <p className="mt-0.5 text-[10px] text-[#94A3B8]">
                     {order.customer?.name || 'Walk-in guest'} · {elapsedMinutes(order.createdAt)} min
                     ago
                   </p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <p className="font-mono text-xl font-black text-[#F59E0B]">
+                  <p className="font-mono text-xl font-black text-[#B45309]">
                     {formatETB(order.totalAmount)}
                   </p>
                   <Badge variant={statusVariant(order.status)} className="text-[10px]">
@@ -184,15 +184,15 @@ export function BillList({
                 </div>
               </div>
 
-              <div className="mt-2 truncate text-xs text-[#94A3B8]">
+              <div className="mt-2 truncate text-xs text-[#64748B]">
                 {order.items.map((item) => `${item.qty}× ${getText(item.name)}`).join(', ')}
               </div>
 
-              <div className="mt-2 flex items-center justify-between border-t border-white/5 pt-2 text-[10px]">
-                <span className="text-[#64748B]">
+              <div className="mt-2 flex items-center justify-between border-t border-slate-200 pt-2 text-[10px]">
+                <span className="text-[#94A3B8]">
                   {order.items.reduce((sum, item) => sum + item.qty, 0)} items
                 </span>
-                <span className="font-mono uppercase text-[#94A3B8]">
+                <span className="font-mono uppercase text-[#64748B]">
                   {order.payment?.method === 'unpaid' ? 'Payment pending' : order.payment?.method}
                 </span>
               </div>

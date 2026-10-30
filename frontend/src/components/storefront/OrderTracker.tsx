@@ -81,17 +81,22 @@ export function OrderTracker({ tracking, onClose }: OrderTrackerProps) {
   const visibleSteps = tracking.type === 'delivery' ? steps : steps.filter((step) => step.key !== 'out_for_delivery');
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-[#171821] p-6 text-[#CBD5E1] shadow-2xl">
-        <div className="flex items-start justify-between border-b border-white/5 pb-4">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Tracking order ${tracking.orderNumber}`}
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-3 backdrop-blur-sm sm:items-center sm:p-4"
+    >
+      <div className="my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto rounded-3xl border border-slate-200 bg-[#FFFFFF] p-5 text-[#334155] shadow-2xl sm:max-h-[calc(100dvh-2rem)] sm:p-6">
+        <div className="flex items-start justify-between border-b border-slate-200 pb-4">
           <div>
-            <p className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-400">
+            <p className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-600">
               <Radio className="h-3 w-3 animate-pulse" /> Live order tracking
             </p>
-            <h3 className="mt-1 text-2xl font-black text-[#F8FAFC]">
+            <h3 className="mt-1 text-2xl font-black text-[#0F172A]">
               Order #{tracking.orderNumber}
             </h3>
-            <p className="text-xs text-[#94A3B8]">
+            <p className="text-xs text-[#64748B]">
               {tracking.type === 'delivery'
                 ? 'Delivery to your address'
                 : tracking.type === 'takeaway'
@@ -100,14 +105,14 @@ export function OrderTracker({ tracking, onClose }: OrderTrackerProps) {
               · {formatETB(tracking.total)}
             </p>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close tracking">
             <X className="h-4 w-4" />
           </Button>
         </div>
 
         <div className="my-5 flex flex-wrap items-center gap-2">
           <Badge variant={statusVariant(status)}>{t(statusTranslationKey(status))}</Badge>
-          <span className="text-[10px] text-[#64748B]">
+          <span className="text-[10px] text-[#94A3B8]">
             {status === 'pending' && 'The restaurant is confirming your order.'}
             {status === 'preparing' && 'The kitchen is preparing your dishes.'}
             {status === 'ready' && 'Your order is ready.'}
@@ -131,8 +136,8 @@ export function OrderTracker({ tracking, onClose }: OrderTrackerProps) {
                   <span
                     className={`flex h-9 w-9 items-center justify-center rounded-full border ${
                       active
-                        ? 'border-[#F59E0B] bg-[#F59E0B]/15 text-[#F59E0B]'
-                        : 'border-white/10 bg-[#14151D] text-[#64748B]'
+                        ? 'border-[#F59E0B] bg-[#F59E0B]/15 text-[#B45309]'
+                        : 'border-slate-200 bg-[#FFFFFF] text-[#94A3B8]'
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -140,7 +145,7 @@ export function OrderTracker({ tracking, onClose }: OrderTrackerProps) {
                   {index < visibleSteps.length - 1 && (
                     <span
                       className={`my-1 h-8 w-0.5 ${
-                        index < current ? 'bg-[#F59E0B]' : 'bg-white/10'
+                        index < current ? 'bg-[#F59E0B]' : 'bg-slate-200'
                       }`}
                     />
                   )}
@@ -148,13 +153,13 @@ export function OrderTracker({ tracking, onClose }: OrderTrackerProps) {
                 <div className="pt-2">
                   <p
                     className={`text-xs font-bold ${
-                      isCurrent ? 'text-[#F59E0B]' : active ? 'text-[#F8FAFC]' : 'text-[#64748B]'
+                      isCurrent ? 'text-[#B45309]' : active ? 'text-[#0F172A]' : 'text-[#94A3B8]'
                     }`}
                   >
                     {step.label}
                   </p>
                   {isCurrent && (
-                    <p className="text-[10px] text-[#94A3B8]">Current stage</p>
+                    <p className="text-[10px] text-[#64748B]">Current stage</p>
                   )}
                 </div>
               </div>
@@ -167,7 +172,7 @@ export function OrderTracker({ tracking, onClose }: OrderTrackerProps) {
             <CheckCircle2 className="mr-1.5 h-4 w-4" /> Order More
           </Button>
         </div>
-        <p className="mt-3 text-center text-[10px] text-[#64748B]">
+        <p className="mt-3 text-center text-[10px] text-[#94A3B8]">
           Keep this window open for live updates from the kitchen and cashier.
         </p>
       </div>

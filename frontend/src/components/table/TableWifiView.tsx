@@ -24,39 +24,39 @@ export function TableWifiView({ settings, onBackToMenu }: TableWifiViewProps) {
   };
 
   return (
-    <Card className="border-white/5 bg-[#171821] shadow-xl">
+    <Card className="border-slate-200 bg-[#FFFFFF] shadow-xl">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F59E0B]/15 text-[#F59E0B]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F59E0B]/15 text-[#B45309]">
             <Wifi className="h-4 w-4" />
           </div>
-          <CardTitle className="text-base font-black text-[#F8FAFC]">
+          <CardTitle className="text-base font-black text-[#0F172A]">
             Guest High-Speed WiFi
           </CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-3 pt-2">
-        <div className="rounded-xl border border-white/5 bg-[#1E202B] p-4">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+        <div className="rounded-xl border border-slate-200 bg-[#F1F5F9] p-4">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
             Network SSID:
           </span>
-          <p className="mt-0.5 text-base font-bold text-[#F8FAFC]">{ssid}</p>
+          <p className="mt-0.5 text-base font-bold text-[#0F172A]">{ssid}</p>
         </div>
 
-        <div className="rounded-xl border border-white/5 bg-[#1E202B] p-4">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+        <div className="rounded-xl border border-slate-200 bg-[#F1F5F9] p-4">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
             Password:
           </span>
           <div className="mt-1 flex items-center justify-between">
-            <p className="font-mono text-base font-black text-[#F59E0B]">{pass}</p>
+            <p className="font-mono text-base font-black text-[#B45309]">{pass}</p>
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleCopy}
-              className="border-white/10 bg-[#14151D] text-xs font-bold text-[#F8FAFC] hover:border-[#F59E0B]"
+              className="border-slate-200 bg-[#FFFFFF] text-xs font-bold text-[#0F172A] hover:border-[#F59E0B]"
             >
-              <Copy className="mr-1 h-3.5 w-3.5 text-[#F59E0B]" />
+              <Copy className="mr-1 h-3.5 w-3.5 text-[#B45309]" />
               {copiedWifi ? 'Copied!' : 'Copy'}
             </Button>
           </div>
@@ -66,7 +66,7 @@ export function TableWifiView({ settings, onBackToMenu }: TableWifiViewProps) {
           type="button"
           variant="secondary"
           onClick={onBackToMenu}
-          className="mt-4 w-full border border-white/10 bg-[#1E202B] font-bold text-[#E2E8F0] hover:bg-[#242634]"
+          className="mt-4 w-full border border-slate-200 bg-[#F1F5F9] font-bold text-[#E2E8F0] hover:bg-[#E2E8F0]"
         >
           <ArrowLeft className="mr-1.5 h-4 w-4" /> Back to Menu
         </Button>

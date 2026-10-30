@@ -42,21 +42,21 @@ export function PortalHeader({
   };
 
   return (
-    <header className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/5 bg-[#14151D] p-4 shadow-sm">
+    <header className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-[#FFFFFF] p-4 shadow-sm">
       <div className="flex min-w-0 items-center gap-3">
         <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl shadow-sm ${accent}`}>
           <Icon className="h-6 w-6 stroke-[2.2]" />
         </div>
         <div className="min-w-0">
-          <h1 className="truncate text-lg font-black tracking-tight text-[#F8FAFC] sm:text-xl">
+          <h1 className="truncate text-lg font-black tracking-tight text-[#0F172A] sm:text-xl">
             {title}
           </h1>
-          <p className="truncate text-xs text-[#94A3B8]">
+          <p className="truncate text-xs text-[#64748B]">
             {subtitle || 'Live operations'}
             {user?.name && (
               <>
                 {' · '}
-                <span className="font-bold text-[#F59E0B]">{user.name}</span>
+                <span className="font-bold text-[#B45309]">{user.name}</span>
               </>
             )}
           </p>
@@ -67,7 +67,7 @@ export function PortalHeader({
         {children}
         {showLanguage && (
           <Button type="button" variant="outline" size="sm" onClick={toggleLanguage}>
-            <Globe className="mr-1.5 h-3.5 w-3.5 text-[#F59E0B]" />
+            <Globe className="mr-1.5 h-3.5 w-3.5 text-[#B45309]" />
             {language === 'en' ? 'አማርኛ' : 'EN'}
           </Button>
         )}
@@ -77,14 +77,14 @@ export function PortalHeader({
         {user && user.role !== 'admin' && (
           <Button variant="outline" size="sm" asChild>
             <Link href={dashboardHref[user.role]}>
-              <LayoutDashboard className="mr-1.5 h-3.5 w-3.5 text-[#F59E0B]" />
+              <LayoutDashboard className="mr-1.5 h-3.5 w-3.5 text-[#B45309]" />
               <span className="hidden sm:inline">My Station</span>
             </Link>
           </Button>
         )}
         <Button variant="outline" size="sm" asChild>
           <Link href="/">
-            <Store className="mr-1.5 h-3.5 w-3.5 text-[#F59E0B]" />
+            <Store className="mr-1.5 h-3.5 w-3.5 text-[#B45309]" />
             <span className="hidden sm:inline">Store</span>
           </Link>
         </Button>

@@ -184,7 +184,7 @@ export function TableOrderModal({
                 className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                   mode === 'menu'
                     ? 'bg-[#F59E0B] text-[#0F1015]'
-                    : 'border border-white/5 bg-[#14151D] text-[#94A3B8]'
+                    : 'border border-slate-200 bg-[#FFFFFF] text-[#64748B]'
                 }`}
               >
                 <UtensilsCrossed className="mr-1 inline h-3.5 w-3.5" /> Add Order
@@ -195,7 +195,7 @@ export function TableOrderModal({
                 className={`cursor-pointer rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                   mode === 'orders'
                     ? 'bg-[#F59E0B] text-[#0F1015]'
-                    : 'border border-white/5 bg-[#14151D] text-[#94A3B8]'
+                    : 'border border-slate-200 bg-[#FFFFFF] text-[#64748B]'
                 }`}
               >
                 <Receipt className="mr-1 inline h-3.5 w-3.5" /> Active Orders ({orders.length})
@@ -205,13 +205,13 @@ export function TableOrderModal({
             {mode === 'orders' && (
               <div className="mt-4 space-y-3">
                 {orders.map((order) => (
-                  <div key={order._id} className="rounded-xl border border-white/5 bg-[#14151D] p-3.5">
+                  <div key={order._id} className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-3.5">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="font-mono text-sm font-black text-[#F59E0B]">
+                        <p className="font-mono text-sm font-black text-[#B45309]">
                           #{order.orderNumber}
                         </p>
-                        <p className="text-[10px] text-[#64748B]">
+                        <p className="text-[10px] text-[#94A3B8]">
                           <Clock className="mr-1 inline h-3 w-3" />
                           {elapsedMinutes(order.createdAt)} min ago · {order.items.length} items
                         </p>
@@ -219,24 +219,24 @@ export function TableOrderModal({
                       <Badge variant={statusVariant(order.status)}>{t(order.status)}</Badge>
                     </div>
 
-                    <div className="mt-2 space-y-1 border-t border-white/5 pt-2 text-xs">
+                    <div className="mt-2 space-y-1 border-t border-slate-200 pt-2 text-xs">
                       {order.items.map((item, i) => (
                         <div key={`${item.menuItem}-${i}`} className="flex justify-between gap-2">
-                          <span className="text-[#CBD5E1]">
+                          <span className="text-[#334155]">
                             {item.qty}× {getText(item.name)}
                             {item.notes && (
-                              <span className="block text-[10px] text-[#F59E0B]">{item.notes}</span>
+                              <span className="block text-[10px] text-[#B45309]">{item.notes}</span>
                             )}
                           </span>
-                          <span className="font-mono text-[#94A3B8]">
+                          <span className="font-mono text-[#64748B]">
                             {formatETB(item.qty * item.price)}
                           </span>
                         </div>
                       ))}
                     </div>
 
-                    <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-white/5 pt-2">
-                      <span className="font-mono text-sm font-black text-[#F8FAFC]">
+                    <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 pt-2">
+                      <span className="font-mono text-sm font-black text-[#0F172A]">
                         {formatETB(order.totalAmount)}
                       </span>
                       <div className="flex flex-wrap gap-1.5">
@@ -274,7 +274,7 @@ export function TableOrderModal({
                   </div>
                 ))}
                 {orders.length === 0 && (
-                  <div className="rounded-xl border border-dashed border-white/10 py-10 text-center text-xs text-[#94A3B8]">
+                  <div className="rounded-xl border border-dashed border-slate-200 py-10 text-center text-xs text-[#64748B]">
                     No active orders. Switch to “Add Order” to take a table order.
                   </div>
                 )}
@@ -285,7 +285,7 @@ export function TableOrderModal({
               <div className="mt-4">
                 <div className="flex flex-wrap gap-2">
                   <div className="relative min-w-[180px] flex-1">
-                    <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#64748B]" />
+                    <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#94A3B8]" />
                     <Input
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
@@ -296,7 +296,7 @@ export function TableOrderModal({
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="rounded-xl border border-white/10 bg-[#12131A] px-3 py-2 text-xs text-[#F8FAFC] outline-none focus:border-[#F59E0B]"
+                    className="rounded-xl border border-slate-200 bg-[#F8FAFC] px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#F59E0B]"
                   >
                     <option value="all">All categories</option>
                     {categories.map((cat) => (
@@ -310,7 +310,7 @@ export function TableOrderModal({
                 <div className="mt-3 max-h-[34vh] space-y-4 overflow-y-auto pr-1">
                   {filteredCategories.map((cat) => (
                     <div key={cat._id}>
-                      <p className="mb-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#F59E0B]">
+                      <p className="mb-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#B45309]">
                         {cat.icon} {getText(cat.name)}
                       </p>
                       <div className="grid gap-2 sm:grid-cols-2">
@@ -319,23 +319,23 @@ export function TableOrderModal({
                             key={item._id}
                             type="button"
                             onClick={() => add(item)}
-                            className="flex cursor-pointer items-center justify-between gap-2 rounded-xl border border-white/5 bg-[#14151D] p-2.5 text-left transition hover:border-[#F59E0B]/40"
+                            className="flex cursor-pointer items-center justify-between gap-2 rounded-xl border border-slate-200 bg-[#FFFFFF] p-2.5 text-left transition hover:border-[#F59E0B]/40"
                           >
                             <div className="min-w-0">
-                              <p className="truncate text-xs font-bold text-[#F8FAFC]">
+                              <p className="truncate text-xs font-bold text-[#0F172A]">
                                 {getText(item.name)}
                               </p>
-                              <p className="font-mono text-[10px] text-[#F59E0B]">
+                              <p className="font-mono text-[10px] text-[#B45309]">
                                 {formatETB(item.price)}
                               </p>
                             </div>
-                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#F59E0B]/10 text-[#F59E0B]">
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#F59E0B]/10 text-[#B45309]">
                               <Plus className="h-4 w-4" />
                             </span>
                           </button>
                         ))}
                         {cat.items.length === 0 && (
-                          <p className="col-span-full py-2 text-[11px] text-[#64748B]">
+                          <p className="col-span-full py-2 text-[11px] text-[#94A3B8]">
                             No matching dishes.
                           </p>
                         )}
@@ -344,42 +344,42 @@ export function TableOrderModal({
                   ))}
                 </div>
 
-                <div className="mt-4 rounded-2xl border border-white/5 bg-[#12131A] p-3">
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-[#F8FAFC] p-3">
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="text-xs font-extrabold text-[#F8FAFC]">
+                    <p className="text-xs font-extrabold text-[#0F172A]">
                       New order · {itemCount} item{itemCount === 1 ? '' : 's'}
                     </p>
-                    <p className="font-mono text-sm font-black text-[#F59E0B]">{formatETB(total)}</p>
+                    <p className="font-mono text-sm font-black text-[#B45309]">{formatETB(total)}</p>
                   </div>
 
                   <div className="max-h-32 space-y-1.5 overflow-y-auto">
                     {lines.map((line) => (
                       <div key={line.item._id} className="flex items-center gap-2 text-xs">
-                        <span className="min-w-0 flex-1 truncate text-[#CBD5E1]">
+                        <span className="min-w-0 flex-1 truncate text-[#334155]">
                           {getText(line.item.name)}
                         </span>
                         <div className="flex items-center gap-1">
                           <button
                             type="button"
                             onClick={() => changeQty(line.item._id, -1)}
-                            className="cursor-pointer rounded-md border border-white/10 p-1 text-[#94A3B8] hover:text-white"
+                            className="cursor-pointer rounded-md border border-slate-200 p-1 text-[#64748B] hover:text-slate-900"
                           >
                             <Minus className="h-3 w-3" />
                           </button>
-                          <span className="w-5 text-center font-mono font-bold text-[#F8FAFC]">
+                          <span className="w-5 text-center font-mono font-bold text-[#0F172A]">
                             {line.qty}
                           </span>
                           <button
                             type="button"
                             onClick={() => changeQty(line.item._id, 1)}
-                            className="cursor-pointer rounded-md border border-white/10 p-1 text-[#94A3B8] hover:text-white"
+                            className="cursor-pointer rounded-md border border-slate-200 p-1 text-[#64748B] hover:text-slate-900"
                           >
                             <Plus className="h-3 w-3" />
                           </button>
                           <button
                             type="button"
                             onClick={() => changeQty(line.item._id, -line.qty)}
-                            className="ml-1 cursor-pointer text-[#64748B] hover:text-rose-400"
+                            className="ml-1 cursor-pointer text-[#94A3B8] hover:text-rose-600"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -387,7 +387,7 @@ export function TableOrderModal({
                       </div>
                     ))}
                     {lines.length === 0 && (
-                      <p className="py-2 text-[11px] text-[#64748B]">
+                      <p className="py-2 text-[11px] text-[#94A3B8]">
                         Tap dishes above to build the table order.
                       </p>
                     )}
@@ -413,7 +413,7 @@ export function TableOrderModal({
               </div>
             )}
 
-            <div className="mt-4 flex gap-2 border-t border-white/5 pt-3">
+            <div className="mt-4 flex gap-2 border-t border-slate-200 pt-3">
               <Button variant="outline" className="flex-1" onClick={onClose}>
                 Close
               </Button>

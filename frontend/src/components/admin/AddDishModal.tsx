@@ -49,17 +49,17 @@ export function AddDishModal({
 
         <form onSubmit={onSubmit} className="my-5 space-y-3.5">
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Category
             </label>
             <select
               required
               value={itemForm.categoryId || categories[0]?._id || ''}
               onChange={(e) => setItemForm((prev) => ({ ...prev, categoryId: e.target.value }))}
-              className="w-full rounded-xl border border-white/10 bg-[#12131A] px-4 py-2.5 text-xs text-[#F8FAFC] outline-none focus:border-[#F59E0B]"
+              className="w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-4 py-2.5 text-xs text-[#0F172A] outline-none focus:border-[#F59E0B]"
             >
               {categories.map((c) => (
-                <option key={c._id} value={c._id} className="bg-[#171821]">
+                <option key={c._id} value={c._id} className="bg-[#FFFFFF]">
                   {c.icon} {getText(c.name)}
                 </option>
               ))}
@@ -68,7 +68,7 @@ export function AddDishModal({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                 Name (English)
               </label>
               <Input
@@ -79,7 +79,7 @@ export function AddDishModal({
               />
             </div>
             <div>
-              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                 Name (አማርኛ)
               </label>
               <Input
@@ -93,7 +93,7 @@ export function AddDishModal({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                 Price (ETB)
               </label>
               <Input
@@ -107,7 +107,7 @@ export function AddDishModal({
               />
             </div>
             <div>
-              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                 Prep Time (minutes)
               </label>
               <Input
@@ -124,7 +124,7 @@ export function AddDishModal({
           </div>
 
           <div>
-            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+            <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
               Image URL (Optional)
             </label>
             <Input
@@ -137,7 +137,7 @@ export function AddDishModal({
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                 Description (English)
               </label>
               <Textarea
@@ -148,7 +148,7 @@ export function AddDishModal({
               />
             </div>
             <div>
-              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                 Description (አማርኛ)
               </label>
               <Textarea
@@ -160,7 +160,7 @@ export function AddDishModal({
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/5 bg-[#12131A] p-3 text-xs text-[#CBD5E1]">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-[#F8FAFC] p-3 text-xs text-[#334155]">
             <label className="flex cursor-pointer items-center gap-2 font-bold">
               <input
                 type="checkbox"
@@ -186,7 +186,7 @@ export function AddDishModal({
             </label>
 
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase text-[#94A3B8]">Spice:</span>
+              <span className="text-[10px] font-extrabold uppercase text-[#64748B]">Spice:</span>
               <select
                 value={itemForm.spiceLevel}
                 onChange={(e) =>
@@ -195,7 +195,7 @@ export function AddDishModal({
                     spiceLevel: e.target.value as DishForm['spiceLevel'],
                   }))
                 }
-                className="rounded-lg border border-white/10 bg-[#171821] px-2 py-1 text-xs text-[#CBD5E1] outline-none focus:border-[#F59E0B]"
+                className="rounded-lg border border-slate-200 bg-[#FFFFFF] px-2 py-1 text-xs text-[#334155] outline-none focus:border-[#F59E0B]"
               >
                 <option value="None">None</option>
                 <option value="Mild">Mild</option>

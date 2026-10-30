@@ -145,19 +145,19 @@ export function OverviewTab({
             label: 'Revenue Today',
             value: formatETB(stats.revenueToday),
             icon: Banknote,
-            tone: 'text-emerald-400 bg-emerald-500/10',
+            tone: 'text-emerald-600 bg-emerald-500/10',
           },
           {
             label: 'Revenue (7 days)',
             value: formatETB(stats.revenueWeek),
             icon: TrendingUp,
-            tone: 'text-[#F59E0B] bg-[#F59E0B]/10',
+            tone: 'text-[#B45309] bg-[#F59E0B]/10',
           },
           {
             label: 'Active Orders',
             value: String(stats.activeCount),
             icon: ClipboardList,
-            tone: 'text-sky-400 bg-sky-500/10',
+            tone: 'text-sky-600 bg-sky-500/10',
           },
           {
             label: 'Average Ticket',
@@ -169,10 +169,10 @@ export function OverviewTab({
           <Card key={stat.label} className="p-4 sm:p-5">
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                   {stat.label}
                 </p>
-                <p className="mt-1.5 text-lg font-black text-[#F8FAFC] sm:text-xl">{stat.value}</p>
+                <p className="mt-1.5 text-lg font-black text-[#0F172A] sm:text-xl">{stat.value}</p>
               </div>
               <span className={`rounded-xl p-2.5 ${stat.tone}`}>
                 <stat.icon className="h-5 w-5" />
@@ -186,8 +186,8 @@ export function OverviewTab({
         <Card className="p-6">
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <h3 className="text-base font-extrabold text-[#F8FAFC]">Weekly Revenue</h3>
-              <p className="text-xs text-[#94A3B8]">Settled bills for the last 7 days</p>
+              <h3 className="text-base font-extrabold text-[#0F172A]">Weekly Revenue</h3>
+              <p className="text-xs text-[#64748B]">Settled bills for the last 7 days</p>
             </div>
             <Badge variant="success">{formatETB(stats.revenueWeek)}</Badge>
           </div>
@@ -195,17 +195,17 @@ export function OverviewTab({
           <div className="flex h-44 items-end gap-2.5">
             {stats.days.map((day, i) => (
               <div key={`${day.label}-${i}`} className="flex flex-1 flex-col items-center gap-2">
-                <span className="text-[9px] font-bold text-[#64748B]">
+                <span className="text-[9px] font-bold text-[#94A3B8]">
                   {day.total ? `${Math.round(day.total / 1000)}k` : ''}
                 </span>
-                <div className="flex h-32 w-full items-end overflow-hidden rounded-lg bg-[#12131A]">
+                <div className="flex h-32 w-full items-end overflow-hidden rounded-lg bg-[#F8FAFC]">
                   <div
                     className="w-full rounded-t-lg bg-gradient-to-t from-[#B45309] to-[#F59E0B] transition-all"
                     style={{ height: `${Math.max(4, (day.total / maxDay) * 100)}%` }}
                     title={formatETB(day.total)}
                   />
                 </div>
-                <span className="text-[10px] font-bold uppercase text-[#94A3B8]">{day.label}</span>
+                <span className="text-[10px] font-bold uppercase text-[#64748B]">{day.label}</span>
               </div>
             ))}
           </div>
@@ -213,19 +213,19 @@ export function OverviewTab({
 
         <Card className="p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-base font-extrabold text-[#F8FAFC]">Payment Mix</h3>
-            <Settings2 className="h-4 w-4 text-[#94A3B8]" />
+            <h3 className="text-base font-extrabold text-[#0F172A]">Payment Mix</h3>
+            <Settings2 className="h-4 w-4 text-[#64748B]" />
           </div>
           <div className="space-y-3">
             {stats.payments.map((p) => (
               <div key={p.method}>
                 <div className="mb-1 flex items-center justify-between text-xs">
-                  <span className="font-semibold text-[#CBD5E1]">
+                  <span className="font-semibold text-[#334155]">
                     {paymentLabel(p.method as never)}
                   </span>
-                  <span className="font-mono font-bold text-[#F8FAFC]">{formatETB(p.amount)}</span>
+                  <span className="font-mono font-bold text-[#0F172A]">{formatETB(p.amount)}</span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-white/5">
+                <div className="h-2 overflow-hidden rounded-full bg-slate-100">
                   <div
                     className="h-full rounded-full bg-[#F59E0B]"
                     style={{ width: `${(p.amount / paymentTotal) * 100}%` }}
@@ -234,7 +234,7 @@ export function OverviewTab({
               </div>
             ))}
             {stats.payments.length === 0 && (
-              <p className="py-8 text-center text-xs text-[#94A3B8]">No settled payments yet.</p>
+              <p className="py-8 text-center text-xs text-[#64748B]">No settled payments yet.</p>
             )}
           </div>
           <Button variant="outline" size="sm" className="mt-4 w-full" onClick={onOpenSettings}>
@@ -247,23 +247,23 @@ export function OverviewTab({
         <Card className="p-6">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h3 className="text-base font-extrabold text-[#F8FAFC]">Top Selling Dishes</h3>
-              <p className="text-xs text-[#94A3B8]">Ranked by total quantity ordered</p>
+              <h3 className="text-base font-extrabold text-[#0F172A]">Top Selling Dishes</h3>
+              <p className="text-xs text-[#64748B]">Ranked by total quantity ordered</p>
             </div>
-            <ChefHat className="h-5 w-5 text-[#F59E0B]" />
+            <ChefHat className="h-5 w-5 text-[#B45309]" />
           </div>
           <div className="space-y-3">
             {stats.topDishes.map((dish, index) => (
               <div key={dish.name} className="flex items-center gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#F59E0B]/10 text-xs font-black text-[#F59E0B]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#F59E0B]/10 text-xs font-black text-[#B45309]">
                   {index + 1}
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex justify-between gap-2 text-xs">
-                    <span className="truncate font-bold text-[#F8FAFC]">{dish.name}</span>
-                    <span className="shrink-0 text-[#94A3B8]">{dish.qty} sold</span>
+                    <span className="truncate font-bold text-[#0F172A]">{dish.name}</span>
+                    <span className="shrink-0 text-[#64748B]">{dish.qty} sold</span>
                   </div>
-                  <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/5">
+                  <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-100">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-[#B45309] to-[#F59E0B]"
                       style={{
@@ -272,50 +272,50 @@ export function OverviewTab({
                     />
                   </div>
                 </div>
-                <span className="shrink-0 font-mono text-xs font-bold text-[#CBD5E1]">
+                <span className="shrink-0 font-mono text-xs font-bold text-[#334155]">
                   {formatETB(dish.revenue)}
                 </span>
               </div>
             ))}
             {stats.topDishes.length === 0 && (
-              <p className="py-8 text-center text-xs text-[#94A3B8]">No dish sales yet.</p>
+              <p className="py-8 text-center text-xs text-[#64748B]">No dish sales yet.</p>
             )}
           </div>
         </Card>
 
         <Card className="p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-base font-extrabold text-[#F8FAFC]">Operations Snapshot</h3>
-            <LayoutGrid className="h-4 w-4 text-[#94A3B8]" />
+            <h3 className="text-base font-extrabold text-[#0F172A]">Operations Snapshot</h3>
+            <LayoutGrid className="h-4 w-4 text-[#64748B]" />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl border border-white/5 bg-[#14151D] p-3.5">
-              <CookingPot className="mb-2 h-4 w-4 text-orange-400" />
-              <p className="text-xl font-black text-[#F8FAFC]">{stats.kitchenLoad}</p>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-[#94A3B8]">
+            <div className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-3.5">
+              <CookingPot className="mb-2 h-4 w-4 text-orange-600" />
+              <p className="text-xl font-black text-[#0F172A]">{stats.kitchenLoad}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wide text-[#64748B]">
                 In kitchen queue
               </p>
             </div>
-            <div className="rounded-xl border border-white/5 bg-[#14151D] p-3.5">
-              <ClipboardList className="mb-2 h-4 w-4 text-emerald-400" />
-              <p className="text-xl font-black text-[#F8FAFC]">{stats.readyCount}</p>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-[#94A3B8]">
+            <div className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-3.5">
+              <ClipboardList className="mb-2 h-4 w-4 text-emerald-600" />
+              <p className="text-xl font-black text-[#0F172A]">{stats.readyCount}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wide text-[#64748B]">
                 Ready to serve
               </p>
             </div>
-            <div className="rounded-xl border border-white/5 bg-[#14151D] p-3.5">
-              <Users className="mb-2 h-4 w-4 text-sky-400" />
-              <p className="text-xl font-black text-[#F8FAFC]">
+            <div className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-3.5">
+              <Users className="mb-2 h-4 w-4 text-sky-600" />
+              <p className="text-xl font-black text-[#0F172A]">
                 {settings?.tablesCount ?? 0}
               </p>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-[#94A3B8]">
+              <p className="text-[10px] font-bold uppercase tracking-wide text-[#64748B]">
                 Dining tables
               </p>
             </div>
-            <div className="rounded-xl border border-white/5 bg-[#14151D] p-3.5">
-              <Banknote className="mb-2 h-4 w-4 text-[#F59E0B]" />
-              <p className="text-xl font-black text-[#F8FAFC]">{stats.totalOrders}</p>
-              <p className="text-[10px] font-bold uppercase tracking-wide text-[#94A3B8]">
+            <div className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-3.5">
+              <Banknote className="mb-2 h-4 w-4 text-[#B45309]" />
+              <p className="text-xl font-black text-[#0F172A]">{stats.totalOrders}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wide text-[#64748B]">
                 All-time orders
               </p>
             </div>
@@ -333,7 +333,7 @@ export function OverviewTab({
 
       <Card className="p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-base font-extrabold text-[#F8FAFC]">Recent Orders</h3>
+          <h3 className="text-base font-extrabold text-[#0F172A]">Recent Orders</h3>
           <Button variant="ghost" size="sm" onClick={onOpenOrders}>
             View all <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
           </Button>
@@ -341,7 +341,7 @@ export function OverviewTab({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-white/5 text-[10px] uppercase tracking-wider text-[#64748B]">
+              <tr className="border-b border-slate-200 text-[10px] uppercase tracking-wider text-[#94A3B8]">
                 <th className="pb-2 pr-3 font-extrabold">Order</th>
                 <th className="pb-2 pr-3 font-extrabold">Type</th>
                 <th className="pb-2 pr-3 font-extrabold">Time</th>
@@ -350,10 +350,10 @@ export function OverviewTab({
                 <th className="pb-2 text-right font-extrabold">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-slate-200">
               {stats.recent.map((o) => (
-                <tr key={o._id} className="text-[#CBD5E1]">
-                  <td className="py-2.5 pr-3 font-mono font-bold text-[#F8FAFC]">
+                <tr key={o._id} className="text-[#334155]">
+                  <td className="py-2.5 pr-3 font-mono font-bold text-[#0F172A]">
                     #{o.orderNumber}
                   </td>
                   <td className="py-2.5 pr-3 capitalize">{o.type.replace('_', ' ')}</td>
@@ -371,7 +371,7 @@ export function OverviewTab({
               ))}
               {stats.recent.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-xs text-[#94A3B8]">
+                  <td colSpan={6} className="py-8 text-center text-xs text-[#64748B]">
                     No orders yet.
                   </td>
                 </tr>

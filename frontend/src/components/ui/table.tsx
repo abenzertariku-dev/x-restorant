@@ -19,7 +19,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b [&_tr]:border-white/5', className)} {...props} />
+  <thead ref={ref} className={cn('[&_tr]:border-b [&_tr]:border-slate-200', className)} {...props} />
 ));
 TableHeader.displayName = 'TableHeader';
 
@@ -29,7 +29,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn('[&_tr:last-child]:border-0 divide-y divide-white/5 text-[#CBD5E1]', className)}
+    className={cn('[&_tr:last-child]:border-0 divide-y divide-slate-200 text-[#334155]', className)}
     {...props}
   />
 ));
@@ -42,7 +42,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={ref}
     className={cn(
-      'border-t border-white/5 bg-[#14151D] font-medium [&>tr]:last:border-b-0',
+      'border-t border-slate-200 bg-[#FFFFFF] font-medium [&>tr]:last:border-b-0',
       className
     )}
     {...props}
@@ -57,7 +57,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      'border-b border-white/5 transition-colors hover:bg-white/[0.03] data-[state=selected]:bg-white/5',
+      'border-b border-slate-200 transition-colors hover:bg-slate-50 data-[state=selected]:bg-slate-100',
       className
     )}
     {...props}
@@ -72,7 +72,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      'h-11 px-3.5 text-left align-middle font-extrabold uppercase tracking-wider text-[10px] text-[#94A3B8] [&:has([role=checkbox])]:pr-0',
+      'h-11 px-3.5 text-left align-middle font-extrabold uppercase tracking-wider text-[10px] text-[#64748B] [&:has([role=checkbox])]:pr-0',
       className
     )}
     {...props}
@@ -98,7 +98,7 @@ const TableCaption = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <caption
     ref={ref}
-    className={cn('mt-4 text-xs text-[#94A3B8]', className)}
+    className={cn('mt-4 text-xs text-[#64748B]', className)}
     {...props}
   />
 ));

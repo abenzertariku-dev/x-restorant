@@ -183,32 +183,32 @@ export function SettlementDrawer({
   const total = selectedOrder?.totalAmount || 0;
 
   return (
-    <Card className="sticky top-6 border-white/5 bg-[#14151D] p-5 shadow-xl sm:p-6">
+    <Card className="sticky top-6 border-slate-200 bg-[#FFFFFF] p-5 shadow-xl sm:p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-black text-[#F8FAFC]">Settlement & Verification</h2>
-        <ShieldCheck className="h-5 w-5 text-emerald-400" />
+        <h2 className="text-lg font-black text-[#0F172A]">Settlement & Verification</h2>
+        <ShieldCheck className="h-5 w-5 text-emerald-600" />
       </div>
 
       {selectedOrder ? (
         <form onSubmit={submit} className="mt-4 space-y-4">
-          <div className="rounded-xl border border-white/5 bg-[#171821] p-4">
-            <div className="flex justify-between text-xs text-[#94A3B8]">
+          <div className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-4">
+            <div className="flex justify-between text-xs text-[#64748B]">
               <span>Bill target</span>
-              <span className="font-bold text-[#F8FAFC]">
+              <span className="font-bold text-[#0F172A]">
                 {selectedOrder.type === 'dine_in'
                   ? `Table ${selectedOrder.tableNumber}`
                   : selectedOrder.type.replace('_', ' ')}
               </span>
             </div>
-            <div className="mt-1 flex justify-between text-xs text-[#94A3B8]">
+            <div className="mt-1 flex justify-between text-xs text-[#64748B]">
               <span>Order number</span>
-              <span className="font-mono font-bold text-[#F59E0B]">
+              <span className="font-mono font-bold text-[#B45309]">
                 #{selectedOrder.orderNumber}
               </span>
             </div>
             <div className="mt-2 flex items-center justify-between text-base font-extrabold">
-              <span className="text-[#CBD5E1]">Amount due</span>
-              <span className="font-mono text-2xl font-black text-[#F59E0B]">
+              <span className="text-[#334155]">Amount due</span>
+              <span className="font-mono text-2xl font-black text-[#B45309]">
                 {formatETB(total)}
               </span>
             </div>
@@ -220,8 +220,8 @@ export function SettlementDrawer({
               onClick={() => setMode('full')}
               className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border py-2.5 text-xs font-bold transition ${
                 mode === 'full'
-                  ? 'border-[#F59E0B] bg-[#F59E0B]/15 text-[#F59E0B]'
-                  : 'border-white/5 bg-[#171821] text-[#94A3B8]'
+                  ? 'border-[#F59E0B] bg-[#F59E0B]/15 text-[#B45309]'
+                  : 'border-slate-200 bg-[#FFFFFF] text-[#64748B]'
               }`}
             >
               <Wallet className="h-4 w-4" /> Full Payment
@@ -234,8 +234,8 @@ export function SettlementDrawer({
               }}
               className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-xl border py-2.5 text-xs font-bold transition ${
                 mode === 'split'
-                  ? 'border-[#F59E0B] bg-[#F59E0B]/15 text-[#F59E0B]'
-                  : 'border-white/5 bg-[#171821] text-[#94A3B8]'
+                  ? 'border-[#F59E0B] bg-[#F59E0B]/15 text-[#B45309]'
+                  : 'border-slate-200 bg-[#FFFFFF] text-[#64748B]'
               }`}
             >
               <SplitSquareHorizontal className="h-4 w-4" /> Split Bill
@@ -245,7 +245,7 @@ export function SettlementDrawer({
           {mode === 'full' && (
             <>
               <div>
-                <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                   Payment channel
                 </label>
                 <div className="grid grid-cols-4 gap-1.5">
@@ -256,8 +256,8 @@ export function SettlementDrawer({
                       onClick={() => setMethod(m.id)}
                       className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border p-2 text-[10px] font-bold transition ${
                         method === m.id
-                          ? 'border-[#F59E0B] bg-[#F59E0B]/15 text-[#F59E0B] ring-1 ring-[#F59E0B]/30'
-                          : 'border-white/5 bg-[#171821] text-[#94A3B8] hover:text-[#F8FAFC]'
+                          ? 'border-[#F59E0B] bg-[#F59E0B]/15 text-[#B45309] ring-1 ring-[#F59E0B]/30'
+                          : 'border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:text-[#0F172A]'
                       }`}
                     >
                       <span className="text-base">{m.icon}</span>
@@ -269,7 +269,7 @@ export function SettlementDrawer({
 
               {method !== 'cash' ? (
                 <div>
-                  <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                  <label className="mb-1 block text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                     {paymentLabel(method)} transaction reference *
                   </label>
                   <Input
@@ -279,13 +279,13 @@ export function SettlementDrawer({
                     placeholder="e.g. TLB9F8C7D6 or CBE-TX-88421"
                     className="font-mono uppercase tracking-wide"
                   />
-                  <p className="mt-1 flex items-start gap-1 text-[10px] text-[#F59E0B]">
+                  <p className="mt-1 flex items-start gap-1 text-[10px] text-[#B45309]">
                     <AlertTriangle className="mt-0.5 h-3 w-3 shrink-0" />
                     Verify the exact reference in the customer’s SMS/transaction log before settling.
                   </p>
                 </div>
               ) : (
-                <p className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-[11px] text-emerald-400">
+                <p className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3 text-[11px] text-emerald-600">
                   Cash payment does not require a transaction reference. Confirm the cash count at the
                   counter.
                 </p>
@@ -296,7 +296,7 @@ export function SettlementDrawer({
           {mode === 'split' && (
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748B]">
                   Guest payments
                 </p>
                 <div className="flex gap-1.5">
@@ -312,7 +312,7 @@ export function SettlementDrawer({
               {splits.map((row, index) => (
                 <div
                   key={index}
-                  className="rounded-xl border border-white/5 bg-[#171821] p-2.5"
+                  className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-2.5"
                 >
                   <div className="flex items-center gap-1.5">
                     <Input
@@ -324,7 +324,7 @@ export function SettlementDrawer({
                     <button
                       type="button"
                       onClick={() => removeSplit(index)}
-                      className="cursor-pointer rounded-lg p-1.5 text-[#64748B] hover:bg-rose-500/10 hover:text-rose-400"
+                      className="cursor-pointer rounded-lg p-1.5 text-[#94A3B8] hover:bg-rose-500/10 hover:text-rose-600"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -335,7 +335,7 @@ export function SettlementDrawer({
                       onChange={(e) =>
                         updateSplit(index, { method: e.target.value as PaymentMethod })
                       }
-                      className="rounded-lg border border-white/10 bg-[#12131A] px-2 py-1.5 text-[11px] text-[#F8FAFC] outline-none focus:border-[#F59E0B]"
+                      className="rounded-lg border border-slate-200 bg-[#F8FAFC] px-2 py-1.5 text-[11px] text-[#0F172A] outline-none focus:border-[#F59E0B]"
                     >
                       {methods.map((m) => (
                         <option key={m.id} value={m.id}>
@@ -367,7 +367,7 @@ export function SettlementDrawer({
               ))}
 
               {splits.length === 0 && (
-                <p className="rounded-xl border border-dashed border-white/10 py-6 text-center text-[11px] text-[#64748B]">
+                <p className="rounded-xl border border-dashed border-slate-200 py-6 text-center text-[11px] text-[#94A3B8]">
                   Choose “Split evenly” or add guests to start a split bill.
                 </p>
               )}
@@ -375,8 +375,8 @@ export function SettlementDrawer({
               <div
                 className={`flex items-center justify-between rounded-xl border p-2.5 text-xs font-bold ${
                   Math.abs(remaining) < 0.01
-                    ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
-                    : 'border-[#F59E0B]/30 bg-[#F59E0B]/10 text-[#F59E0B]'
+                    ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600'
+                    : 'border-[#F59E0B]/30 bg-[#F59E0B]/10 text-[#B45309]'
                 }`}
               >
                 <span>Allocated {formatETB(splitTotal)}</span>
@@ -390,7 +390,7 @@ export function SettlementDrawer({
           )}
 
           {error && (
-            <p className="flex items-start gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-[11px] font-semibold text-rose-400">
+            <p className="flex items-start gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-[11px] font-semibold text-rose-600">
               <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
               {error}
             </p>
@@ -417,7 +417,7 @@ export function SettlementDrawer({
           </div>
         </form>
       ) : (
-        <div className="py-16 text-center text-xs text-[#94A3B8]">
+        <div className="py-16 text-center text-xs text-[#64748B]">
           Select an active bill from the list to process payment, verify references and issue a fiscal
           receipt.
         </div>

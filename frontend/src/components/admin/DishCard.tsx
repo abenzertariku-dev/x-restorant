@@ -19,9 +19,9 @@ export function DishCard({ item, onToggleStock, onDelete, onEdit }: DishCardProp
   const { getText } = useLanguage();
 
   return (
-    <Card className="group flex flex-col justify-between overflow-hidden p-4 shadow-sm transition-all hover:border-[#F59E0B]/40 hover:bg-[#1A1C26]">
+    <Card className="group flex flex-col justify-between overflow-hidden p-4 shadow-sm transition-all hover:border-[#F59E0B]/40 hover:bg-[#F8FAFC]">
       <div>
-        <div className="relative mb-3 flex h-44 w-full items-center justify-center overflow-hidden rounded-xl bg-[#12131A]">
+        <div className="relative mb-3 flex h-44 w-full items-center justify-center overflow-hidden rounded-xl bg-[#F8FAFC]">
           {item.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -32,7 +32,7 @@ export function DishCard({ item, onToggleStock, onDelete, onEdit }: DishCardProp
           ) : (
             <span className="text-4xl">🍽️</span>
           )}
-          <div className="absolute bottom-2.5 right-2.5 rounded-lg border border-white/10 bg-[#0F1015]/90 px-3 py-1 font-mono text-xs font-black text-[#F59E0B] shadow-lg backdrop-blur-md">
+          <div className="absolute bottom-2.5 right-2.5 rounded-lg border border-slate-200 bg-[#F6F7F9]/90 px-3 py-1 font-mono text-xs font-black text-[#B45309] shadow-lg backdrop-blur-md">
             {formatETB(item.price)}
           </div>
           {!item.isAvailable && (
@@ -42,8 +42,8 @@ export function DishCard({ item, onToggleStock, onDelete, onEdit }: DishCardProp
           )}
         </div>
 
-        <h4 className="text-sm font-extrabold text-[#F8FAFC]">{getText(item.name)}</h4>
-        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#94A3B8]">
+        <h4 className="text-sm font-extrabold text-[#0F172A]">{getText(item.name)}</h4>
+        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#64748B]">
           {getText(item.description)}
         </p>
 
@@ -58,14 +58,14 @@ export function DishCard({ item, onToggleStock, onDelete, onEdit }: DishCardProp
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-3">
+      <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-3">
         <button
           type="button"
           onClick={() => onToggleStock(item._id)}
           className={`cursor-pointer rounded-full px-3 py-1 text-xs font-bold transition ${
             item.isAvailable
-              ? 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
-              : 'border border-white/5 bg-white/5 text-[#94A3B8] hover:bg-white/10'
+              ? 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20'
+              : 'border border-slate-200 bg-slate-100 text-[#64748B] hover:bg-slate-200'
           }`}
         >
           {item.isAvailable ? 'In Stock' : 'Out of Stock'}
@@ -75,7 +75,7 @@ export function DishCard({ item, onToggleStock, onDelete, onEdit }: DishCardProp
           <button
             type="button"
             onClick={() => onEdit(item)}
-            className="cursor-pointer rounded-lg p-2 text-[#94A3B8] transition hover:bg-[#F59E0B]/10 hover:text-[#F59E0B]"
+            className="cursor-pointer rounded-lg p-2 text-[#64748B] transition hover:bg-[#F59E0B]/10 hover:text-[#B45309]"
             title="Edit dish"
           >
             <Pencil className="h-4 w-4" />
@@ -84,7 +84,7 @@ export function DishCard({ item, onToggleStock, onDelete, onEdit }: DishCardProp
             <button
               type="button"
               onClick={() => onDelete(item._id)}
-              className="cursor-pointer rounded-lg p-2 text-[#94A3B8] transition hover:bg-rose-500/10 hover:text-rose-400"
+              className="cursor-pointer rounded-lg p-2 text-[#64748B] transition hover:bg-rose-500/10 hover:text-rose-600"
               title="Delete dish"
             >
               <Trash2 className="h-4 w-4" />

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { QrCode, ExternalLink, Copy, Check, Printer, X, Sparkles } from 'lucide-react';
+import { QrCode, ExternalLink, Copy, Check, Printer, Sparkles } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -43,17 +43,17 @@ export function TableQRModal({
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent onClose={onClose} className="max-w-md p-6 bg-[#12131A] border-white/10 text-[#F8FAFC]">
+      <DialogContent onClose={onClose} className="max-w-md p-6 bg-[#F8FAFC] border-slate-200 text-[#0F172A]">
         <DialogHeader>
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F59E0B]/10 text-[#F59E0B]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#F59E0B]/10 text-[#B45309]">
               <QrCode className="h-5 w-5" />
             </div>
             <div>
-              <DialogTitle className="text-lg font-black text-[#F8FAFC]">
+              <DialogTitle className="text-lg font-black text-[#0F172A]">
                 Table {tableNumber} QR Code
               </DialogTitle>
-              <p className="text-[11px] font-semibold text-[#94A3B8]">
+              <p className="text-[11px] font-semibold text-[#64748B]">
                 {zone} Zone · {capacity} Seats · Customer Scan Code
               </p>
             </div>
@@ -61,16 +61,16 @@ export function TableQRModal({
         </DialogHeader>
 
         {/* Printable Stand Card */}
-        <div id="printable-qr-card" className="mt-4 flex flex-col items-center rounded-2xl border border-white/10 bg-[#181924] p-6 text-center shadow-xl">
-          <div className="mb-2 flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#F59E0B]">
+        <div id="printable-qr-card" className="mt-4 flex flex-col items-center rounded-2xl border border-slate-200 bg-[#FFFFFF] p-6 text-center shadow-xl">
+          <div className="mb-2 flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-[#B45309]">
             <Sparkles className="h-3.5 w-3.5" />
             <span>X-RESTORANT</span>
           </div>
 
-          <h2 className="text-2xl font-black text-[#F8FAFC]">
+          <h2 className="text-2xl font-black text-[#0F172A]">
             TABLE {tableNumber}
           </h2>
-          <p className="mt-0.5 text-xs text-[#94A3B8]">
+          <p className="mt-0.5 text-xs text-[#64748B]">
             Scan with your phone to order, call waiter, or request bill
           </p>
 
@@ -86,7 +86,7 @@ export function TableQRModal({
             />
           </div>
 
-          <Badge variant="outline" className="border-[#F59E0B]/30 bg-[#F59E0B]/10 text-[#F59E0B] font-mono text-[11px]">
+          <Badge variant="outline" className="border-[#F59E0B]/30 bg-[#F59E0B]/10 text-[#B45309] font-mono text-[11px]">
             {tableUrl}
           </Badge>
         </div>
@@ -98,16 +98,16 @@ export function TableQRModal({
             variant="outline"
             size="sm"
             onClick={handleCopy}
-            className="flex items-center justify-center gap-1.5 text-xs border-white/10"
+            className="flex items-center justify-center gap-1.5 text-xs border-slate-200"
           >
             {copied ? (
               <>
-                <Check className="h-3.5 w-3.5 text-emerald-400" />
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
                 <span>Copied!</span>
               </>
             ) : (
               <>
-                <Copy className="h-3.5 w-3.5 text-[#94A3B8]" />
+                <Copy className="h-3.5 w-3.5 text-[#64748B]" />
                 <span>Copy Link</span>
               </>
             )}
@@ -118,10 +118,10 @@ export function TableQRModal({
             variant="outline"
             size="sm"
             asChild
-            className="flex items-center justify-center gap-1.5 text-xs border-white/10 hover:border-[#F59E0B]"
+            className="flex items-center justify-center gap-1.5 text-xs border-slate-200 hover:border-[#F59E0B]"
           >
             <a href={tableUrl} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-3.5 w-3.5 text-[#F59E0B]" />
+              <ExternalLink className="h-3.5 w-3.5 text-[#B45309]" />
               <span>Test Table Page</span>
             </a>
           </Button>

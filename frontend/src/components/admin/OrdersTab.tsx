@@ -113,16 +113,16 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
     <Card className="p-5 sm:p-6">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="text-base font-extrabold text-[#F8FAFC]">
+          <h3 className="text-base font-extrabold text-[#0F172A]">
             All Orders & Billing ({filtered.length})
           </h3>
-          <p className="text-xs text-[#94A3B8]">
+          <p className="text-xs text-[#64748B]">
             Complete transactional history across dine-in table bills and digital deliveries.
           </p>
         </div>
         <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           <div className="relative min-w-[180px] flex-1 sm:flex-none">
-            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#64748B]" />
+            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#94A3B8]" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -145,7 +145,7 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
             className={`shrink-0 cursor-pointer rounded-lg px-3 py-1.5 text-[11px] font-bold transition ${
               filter === f.key
                 ? 'bg-[#F59E0B] text-[#0F1015]'
-                : 'border border-white/5 bg-[#14151D] text-[#94A3B8] hover:text-[#F8FAFC]'
+                : 'border border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
             {f.label}
@@ -170,20 +170,20 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
         <TableBody>
           {filtered.map((o, idx) => (
             <TableRow key={o._id || o.orderNumber || idx}>
-              <TableCell className="font-mono font-bold text-[#F59E0B]">
+              <TableCell className="font-mono font-bold text-[#B45309]">
                 #{o.orderNumber}
               </TableCell>
               <TableCell className="font-semibold capitalize">{o.type.replace('_', ' ')}</TableCell>
               <TableCell className="font-medium">
                 {o.type === 'dine_in' ? `Table ${o.tableNumber}` : o.customer?.phone || 'Guest'}
               </TableCell>
-              <TableCell className="max-w-[240px] truncate text-[#94A3B8]">
+              <TableCell className="max-w-[240px] truncate text-[#64748B]">
                 {o.items.map((i) => `${i.qty}× ${getText(i.name)}`).join(', ')}
               </TableCell>
-              <TableCell className="font-mono font-extrabold text-[#F8FAFC]">
+              <TableCell className="font-mono font-extrabold text-[#0F172A]">
                 {formatETB(o.totalAmount)}
               </TableCell>
-              <TableCell className="font-mono text-[10px] uppercase text-[#94A3B8]">
+              <TableCell className="font-mono text-[10px] uppercase text-[#64748B]">
                 {o.payment?.splits?.length
                   ? `${o.payment.splits.length}-way split`
                   : paymentLabel(o.payment?.method)}
@@ -196,7 +196,7 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
                   <button
                     type="button"
                     onClick={() => setSelected(o)}
-                    className="cursor-pointer rounded-lg p-1.5 text-[#94A3B8] transition hover:bg-white/5 hover:text-[#F8FAFC]"
+                    className="cursor-pointer rounded-lg p-1.5 text-[#64748B] transition hover:bg-slate-100 hover:text-[#0F172A]"
                     title="View details"
                   >
                     <Eye className="h-3.5 w-3.5" />
@@ -206,7 +206,7 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
                       type="button"
                       disabled={busyId === o._id}
                       onClick={() => voidOrder(o)}
-                      className="cursor-pointer rounded-lg p-1.5 text-[#94A3B8] transition hover:bg-rose-500/10 hover:text-rose-400 disabled:opacity-50"
+                      className="cursor-pointer rounded-lg p-1.5 text-[#64748B] transition hover:bg-rose-500/10 hover:text-rose-600 disabled:opacity-50"
                       title="Cancel order"
                     >
                       <Ban className="h-3.5 w-3.5" />
@@ -218,7 +218,7 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
           ))}
           {filtered.length === 0 && (
             <TableRow>
-              <TableCell colSpan={8} className="py-12 text-center text-[#94A3B8]">
+              <TableCell colSpan={8} className="py-12 text-center text-[#64748B]">
                 No orders match this filter.
               </TableCell>
             </TableRow>
@@ -244,16 +244,16 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
                   <Badge variant="outline">{formatDateTime(selected.createdAt)}</Badge>
                 </div>
 
-                <div className="rounded-xl border border-white/5 bg-[#14151D] p-3">
-                  <p className="mb-1 font-bold text-[#F8FAFC]">
+                <div className="rounded-xl border border-slate-200 bg-[#FFFFFF] p-3">
+                  <p className="mb-1 font-bold text-[#0F172A]">
                     {selected.customer?.name || 'Walk-in guest'}
                   </p>
-                  <p className="text-[#94A3B8]">{selected.customer?.phone || 'No phone'}</p>
+                  <p className="text-[#64748B]">{selected.customer?.phone || 'No phone'}</p>
                   {selected.customer?.address && (
-                    <p className="mt-1 text-[#94A3B8]">{selected.customer.address}</p>
+                    <p className="mt-1 text-[#64748B]">{selected.customer.address}</p>
                   )}
                   {selected.customer?.notes && (
-                    <p className="mt-1 text-[#F59E0B]">Note: {selected.customer.notes}</p>
+                    <p className="mt-1 text-[#B45309]">Note: {selected.customer.notes}</p>
                   )}
                 </div>
 
@@ -261,15 +261,15 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
                   {selected.items.map((item, i) => (
                     <div
                       key={`${item.menuItem}-${i}`}
-                      className="flex justify-between gap-2 border-b border-white/5 py-1.5"
+                      className="flex justify-between gap-2 border-b border-slate-200 py-1.5"
                     >
-                      <span className="text-[#CBD5E1]">
+                      <span className="text-[#334155]">
                         {item.qty}× {getText(item.name)}
                         {item.notes && (
-                          <span className="block text-[10px] text-[#64748B]">{item.notes}</span>
+                          <span className="block text-[10px] text-[#94A3B8]">{item.notes}</span>
                         )}
                       </span>
-                      <span className="font-mono text-[#F8FAFC]">
+                      <span className="font-mono text-[#0F172A]">
                         {formatETB(item.qty * item.price)}
                       </span>
                     </div>
@@ -277,17 +277,17 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
                 </div>
 
                 <div className="flex items-center justify-between rounded-xl bg-[#F59E0B]/10 p-3">
-                  <span className="font-bold text-[#F59E0B]">Total</span>
-                  <span className="font-mono text-base font-black text-[#F59E0B]">
+                  <span className="font-bold text-[#B45309]">Total</span>
+                  <span className="font-mono text-base font-black text-[#B45309]">
                     {formatETB(selected.totalAmount)}
                   </span>
                 </div>
 
                 {selected.payment?.splits?.length ? (
                   <div className="space-y-1.5">
-                    <p className="font-bold text-[#F8FAFC]">Split payments</p>
+                    <p className="font-bold text-[#0F172A]">Split payments</p>
                     {selected.payment.splits.map((split, i) => (
-                      <div key={i} className="flex justify-between text-[#94A3B8]">
+                      <div key={i} className="flex justify-between text-[#64748B]">
                         <span>
                           {split.guestName || `Guest ${i + 1}`} · {paymentLabel(split.method)}
                         </span>
@@ -296,8 +296,8 @@ export function OrdersTab({ orders, onVoid }: OrdersTabProps) {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-[#94A3B8]">
-                    Payment: <span className="font-bold text-[#CBD5E1]">
+                  <p className="text-[#64748B]">
+                    Payment: <span className="font-bold text-[#334155]">
                       {paymentLabel(selected.payment?.method)}
                     </span>
                   </p>

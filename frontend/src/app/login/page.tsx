@@ -50,7 +50,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-[#0F1015] p-4 text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
+    <div className="relative flex min-h-screen items-center justify-center bg-[#F6F7F9] p-4 text-[#334155] selection:bg-[#F59E0B] selection:text-[#0F1015]">
       {/* Return to Storefront */}
       <Button
         variant="outline"
@@ -59,30 +59,30 @@ export default function LoginPage() {
         className="absolute left-6 top-6"
       >
         <Link href="/" className="flex items-center gap-2">
-          <ChevronLeft className="h-4 w-4 text-[#F59E0B]" />
+          <ChevronLeft className="h-4 w-4 text-[#B45309]" />
           <span>Return to Storefront</span>
         </Link>
       </Button>
 
       {/* Modern Obsidian Shadcn Card */}
-      <Card className="relative w-full max-w-sm rounded-3xl p-8 shadow-2xl border-white/10">
+      <Card className="relative w-full max-w-sm rounded-3xl p-8 shadow-2xl border-slate-200">
         {/* Brand Header */}
         <CardHeader className="p-0 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F59E0B] text-[#0F1015] shadow-md shadow-amber-500/20">
             <UtensilsCrossed className="h-7 w-7 stroke-[2.2]" />
           </div>
 
-          <CardTitle className="text-2xl font-black tracking-tight text-[#F8FAFC]">
+          <CardTitle className="text-2xl font-black tracking-tight text-[#0F172A]">
             X-RESTORANT
           </CardTitle>
-          <CardDescription className="mt-1 text-[11px] font-extrabold uppercase tracking-widest text-[#F59E0B]">
+          <CardDescription className="mt-1 text-[11px] font-extrabold uppercase tracking-widest text-[#B45309]">
             STAFF MANAGEMENT PORTAL
           </CardDescription>
         </CardHeader>
 
         {/* Error Alert */}
         {error && (
-          <div className="mt-5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-center text-xs font-semibold text-rose-400">
+          <div className="mt-5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-center text-xs font-semibold text-rose-600">
             {error}
           </div>
         )}
@@ -92,11 +92,11 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Username Field */}
             <div>
-              <label className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-wider text-[#64748B]">
                 Username or Staff ID
               </label>
               <div className="relative flex items-center">
-                <User className="pointer-events-none absolute left-4 h-4 w-4 text-[#64748B]" />
+                <User className="pointer-events-none absolute left-4 h-4 w-4 text-[#94A3B8]" />
                 <Input
                   type="text"
                   required
@@ -112,11 +112,11 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-wider text-[#94A3B8]">
+              <label className="mb-1.5 block text-[11px] font-extrabold uppercase tracking-wider text-[#64748B]">
                 Password / PIN
               </label>
               <div className="relative flex items-center">
-                <Lock className="pointer-events-none absolute left-4 h-4 w-4 text-[#64748B]" />
+                <Lock className="pointer-events-none absolute left-4 h-4 w-4 text-[#94A3B8]" />
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   required
@@ -128,7 +128,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 text-[#64748B] transition hover:text-[#CBD5E1] cursor-pointer"
+                  className="absolute right-3.5 text-[#94A3B8] transition hover:text-[#334155] cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -150,8 +150,8 @@ export default function LoginPage() {
           </form>
 
           {/* Security Footnote */}
-          <div className="mt-6 flex items-center justify-center gap-1.5 text-[11px] text-[#64748B]">
-            <Shield className="h-3.5 w-3.5 text-[#F59E0B]" />
+          <div className="mt-6 flex items-center justify-center gap-1.5 text-[11px] text-[#94A3B8]">
+            <Shield className="h-3.5 w-3.5 text-[#B45309]" />
             <span>Encrypted Session · Role-Based Staff Security</span>
           </div>
         </CardContent>

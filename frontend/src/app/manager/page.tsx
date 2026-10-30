@@ -15,10 +15,11 @@ import {
   User as UserIcon,
   MapPin,
   AlertTriangle,
-  Loader2,
+
 } from 'lucide-react';
 import { AuthGuard } from '@/components/shared/AuthGuard';
 import { PortalHeader } from '@/components/shared/PortalHeader';
+import { PortalLoading } from '@/components/shared/LoadingState';
 import { FloorBoard } from '@/components/manager/FloorBoard';
 import { OrdersTab } from '@/components/admin/OrdersTab';
 import { MenuCatalogTab } from '@/components/admin/MenuCatalogTab';
@@ -269,7 +270,7 @@ function ManagerDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0F1015] text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
+    <div className="min-h-screen bg-[#F6F7F9] text-[#334155] selection:bg-[#F59E0B] selection:text-[#0F1015]">
       <div className="mx-auto w-full max-w-[1500px] p-4 sm:p-6 lg:p-8">
         <PortalHeader
           title="Manager Floor Control"
@@ -295,7 +296,7 @@ function ManagerDashboard() {
               className={`flex shrink-0 cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
                 tab === item.key
                   ? 'bg-[#F59E0B] text-[#0F1015] shadow-md shadow-amber-500/20'
-                  : 'border border-white/5 bg-[#14151D] text-[#94A3B8] hover:text-[#F8FAFC]'
+                  : 'border border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:text-[#0F172A]'
               }`}
             >
               <item.icon className="h-4 w-4" />
@@ -303,7 +304,7 @@ function ManagerDashboard() {
               {!!item.badge && (
                 <span
                   className={`rounded-full px-1.5 py-0.5 text-[9px] font-black ${
-                    tab === item.key ? 'bg-[#0F1015] text-[#F59E0B]' : 'bg-[#F59E0B] text-[#0F1015]'
+                    tab === item.key ? 'bg-[#F6F7F9] text-[#B45309]' : 'bg-[#F59E0B] text-[#0F1015]'
                   }`}
                 >
                   {item.badge}
@@ -314,13 +315,13 @@ function ManagerDashboard() {
         </div>
 
         {error && (
-          <div className="mb-4 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-400">
+          <div className="mb-4 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-semibold text-rose-600">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
             <span className="flex-1">{error}</span>
             <button
               type="button"
               onClick={() => setError('')}
-              className="cursor-pointer text-rose-300 hover:text-white"
+              className="cursor-pointer text-rose-700 hover:text-slate-900"
             >
               Dismiss
             </button>
@@ -328,28 +329,25 @@ function ManagerDashboard() {
         )}
 
         {loading ? (
-          <div className="flex min-h-[55vh] flex-col items-center justify-center gap-3 text-[#94A3B8]">
-            <Loader2 className="h-8 w-8 animate-spin text-[#F59E0B]" />
-            <p className="text-xs font-bold uppercase tracking-widest">Loading floor state…</p>
-          </div>
+          <PortalLoading label="Loading floor state" />
         ) : (
           <>
             {tab === 'floor' && (
               <div className="space-y-5">
                 {alerts.length > 0 && (
                   <Card className="border-[#F59E0B]/30 bg-[#F59E0B]/[0.05] p-4">
-                    <div className="flex items-center gap-2 text-xs font-extrabold text-[#F59E0B]">
+                    <div className="flex items-center gap-2 text-xs font-extrabold text-[#B45309]">
                       <BellRing className="h-4 w-4 animate-pulse" /> Live guest alerts
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {alerts.map((table) => (
                         <span
                           key={table._id}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#14151D] px-2.5 py-1.5 text-[11px] font-bold text-[#CBD5E1]"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-[#FFFFFF] px-2.5 py-1.5 text-[11px] font-bold text-[#334155]"
                         >
-                          <MapPin className="h-3 w-3 text-[#F59E0B]" />
+                          <MapPin className="h-3 w-3 text-[#B45309]" />
                           Table {table.tableNumber}
-                          <span className="text-[#64748B]">
+                          <span className="text-[#94A3B8]">
                             {table.status === 'call_waiter' ? 'called waiter' : 'wants bill'}
                           </span>
                         </span>
@@ -371,8 +369,8 @@ function ManagerDashboard() {
                 <Card className="p-5">
                   <div className="mb-4 flex items-center justify-between">
                     <div>
-                      <h3 className="text-base font-extrabold text-[#F8FAFC]">Awaiting Approval</h3>
-                      <p className="text-xs text-[#94A3B8]">
+                      <h3 className="text-base font-extrabold text-[#0F172A]">Awaiting Approval</h3>
+                      <p className="text-xs text-[#64748B]">
                         QR orders held until a manager releases them to the kitchen.
                       </p>
                     </div>
@@ -383,14 +381,14 @@ function ManagerDashboard() {
                     {pendingOrders.map((order) => (
                       <div
                         key={order._id}
-                        className="rounded-2xl border border-white/5 bg-[#14151D] p-4"
+                        className="rounded-2xl border border-slate-200 bg-[#FFFFFF] p-4"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <p className="font-mono text-sm font-black text-[#F59E0B]">
+                            <p className="font-mono text-sm font-black text-[#B45309]">
                               #{order.orderNumber}
                             </p>
-                            <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[10px] text-[#64748B]">
+                            <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[10px] text-[#94A3B8]">
                               <span className="inline-flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
                                 {elapsedMinutes(order.createdAt)} min ago
@@ -403,14 +401,14 @@ function ManagerDashboard() {
                               {order.tableNumber && <span>Table {order.tableNumber}</span>}
                             </p>
                           </div>
-                          <span className="font-mono text-sm font-black text-[#F8FAFC]">
+                          <span className="font-mono text-sm font-black text-[#0F172A]">
                             {formatETB(order.totalAmount)}
                           </span>
                         </div>
 
-                        <div className="mt-2.5 space-y-1 border-t border-white/5 pt-2.5 text-[11px]">
+                        <div className="mt-2.5 space-y-1 border-t border-slate-200 pt-2.5 text-[11px]">
                           {order.items.map((item, i) => (
-                            <div key={`${item.menuItem}-${i}`} className="flex justify-between text-[#94A3B8]">
+                            <div key={`${item.menuItem}-${i}`} className="flex justify-between text-[#64748B]">
                               <span>
                                 {item.qty}× {item.name.en}
                                 {item.notes ? ` · ${item.notes}` : ''}
@@ -419,7 +417,7 @@ function ManagerDashboard() {
                             </div>
                           ))}
                           {order.customer?.notes && (
-                            <p className="rounded-lg bg-[#F59E0B]/10 px-2 py-1 text-[#F59E0B]">
+                            <p className="rounded-lg bg-[#F59E0B]/10 px-2 py-1 text-[#B45309]">
                               Note: {order.customer.notes}
                             </p>
                           )}
@@ -456,8 +454,8 @@ function ManagerDashboard() {
                     ))}
                     {pendingOrders.length === 0 && (
                       <div className="rounded-2xl border border-dashed border-emerald-500/20 bg-emerald-500/5 py-12 text-center">
-                        <CheckCircle2 className="mx-auto mb-2 h-7 w-7 text-emerald-400" />
-                        <p className="text-xs font-bold text-emerald-400">
+                        <CheckCircle2 className="mx-auto mb-2 h-7 w-7 text-emerald-600" />
+                        <p className="text-xs font-bold text-emerald-600">
                           All QR orders are approved. Queue is clear.
                         </p>
                       </div>
@@ -468,8 +466,8 @@ function ManagerDashboard() {
                 <Card className="p-5">
                   <div className="mb-4 flex items-center justify-between">
                     <div>
-                      <h3 className="text-base font-extrabold text-[#F8FAFC]">Guest Requests</h3>
-                      <p className="text-xs text-[#94A3B8]">
+                      <h3 className="text-base font-extrabold text-[#0F172A]">Guest Requests</h3>
+                      <p className="text-xs text-[#64748B]">
                         Tables calling a waiter or requesting the bill.
                       </p>
                     </div>
@@ -479,13 +477,13 @@ function ManagerDashboard() {
                     {alerts.map((table) => (
                       <div
                         key={table._id}
-                        className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-[#14151D] p-3.5"
+                        className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-[#FFFFFF] p-3.5"
                       >
                         <div>
-                          <p className="text-sm font-extrabold text-[#F8FAFC]">
+                          <p className="text-sm font-extrabold text-[#0F172A]">
                             Table {table.tableNumber}
                           </p>
-                          <p className="text-[10px] text-[#94A3B8]">
+                          <p className="text-[10px] text-[#64748B]">
                             {table.zone} · {table.capacity} seats ·{' '}
                             {table.status === 'call_waiter' ? 'Waiter requested' : 'Bill requested'}{' '}
                             {table.status === 'call_waiter' && table.lastCallAt
@@ -510,7 +508,7 @@ function ManagerDashboard() {
                       </div>
                     ))}
                     {alerts.length === 0 && (
-                      <p className="rounded-xl border border-dashed border-white/10 py-10 text-center text-xs text-[#94A3B8]">
+                      <p className="rounded-xl border border-dashed border-slate-200 py-10 text-center text-xs text-[#64748B]">
                         No live guest requests right now.
                       </p>
                     )}

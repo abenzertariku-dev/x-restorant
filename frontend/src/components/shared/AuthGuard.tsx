@@ -28,9 +28,9 @@ export function AuthGuard({ roles, children }: AuthGuardProps) {
 
   if (loading || !user || (roles && !roles.includes(user.role))) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0F1015]">
-        <div className="flex flex-col items-center gap-3 text-[#94A3B8]">
-          <Loader2 className="h-7 w-7 animate-spin text-[#F59E0B]" />
+      <div className="flex min-h-screen items-center justify-center bg-[#F6F7F9]">
+        <div className="flex flex-col items-center gap-3 text-[#64748B]">
+          <Loader2 className="h-7 w-7 animate-spin text-[#B45309]" />
           <p className="text-xs font-bold uppercase tracking-widest">Verifying staff session…</p>
         </div>
       </div>

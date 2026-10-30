@@ -24,6 +24,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/shared/EmptyState';
 import { TableMenuCard } from '@/components/table/TableMenuCard';
 import { TableWifiView } from '@/components/table/TableWifiView';
 import { TableOrdersList } from '@/components/table/TableOrdersList';
@@ -299,16 +301,16 @@ export default function TableQRPage() {
 
   if (notFound) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#0F1015] p-6 text-center text-[#CBD5E1]">
-        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#F6F7F9] p-6 text-center text-[#334155]">
+        <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600">
           <UtensilsCrossed className="h-7 w-7" />
         </span>
-        <h1 className="mt-4 text-2xl font-black text-[#F8FAFC]">Table not found</h1>
-        <p className="mt-1 max-w-xs text-sm text-[#94A3B8]">
+        <h1 className="mt-4 text-2xl font-black text-[#0F172A]">Table not found</h1>
+        <p className="mt-1 max-w-xs text-sm text-[#64748B]">
           This QR code may be outdated. Please ask a staff member for help.
         </p>
         <Link href="/" className="mt-5">
-          <Button variant="outline" className="border-white/10">
+          <Button variant="outline" className="border-slate-200">
             <ArrowLeft className="mr-1.5 h-4 w-4" /> Back to store
           </Button>
         </Link>
@@ -317,19 +319,19 @@ export default function TableQRPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F1015] pb-32 text-[#CBD5E1] selection:bg-[#F59E0B] selection:text-[#0F1015]">
-      <header className="relative border-b border-white/5 bg-[#14151D] px-5 pb-6 pt-5 text-[#F8FAFC] shadow-sm">
+    <div className="min-h-screen bg-[#F6F7F9] pb-32 text-[#334155] selection:bg-[#F59E0B] selection:text-[#0F1015]">
+      <header className="relative border-b border-slate-200 bg-[#FFFFFF] px-5 pb-6 pt-5 text-[#0F172A] shadow-sm">
         <div className="mx-auto max-w-xl">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#F59E0B] text-[#0F1015] shadow-sm">
                 <UtensilsCrossed className="h-5 w-5 stroke-[2.2]" />
               </div>
-              <div>
-                <h1 className="text-lg font-black leading-tight text-[#F8FAFC] sm:text-xl">
+              <div className="min-w-0">
+                <h1 className="truncate text-lg font-black leading-tight text-[#0F172A] sm:text-xl">
                   {getText(settings?.name) || 'X-RESTORANT'}
                 </h1>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
                   {table?.zone || 'Dine-in'} · Table #{tableNumber}
                 </p>
               </div>
@@ -340,9 +342,9 @@ export default function TableQRPage() {
                 variant="outline"
                 size="sm"
                 onClick={toggleLanguage}
-                className="border-white/10 bg-[#1A1B24] text-[10px] font-bold text-[#CBD5E1]"
+                className="border-slate-200 bg-[#F1F5F9] text-[10px] font-bold text-[#334155]"
               >
-                <Globe className="mr-1 h-3 w-3 text-[#F59E0B]" />
+                <Globe className="mr-1 h-3 w-3 text-[#B45309]" />
                 {language === 'en' ? 'አማርኛ' : 'EN'}
               </Button>
               <Badge variant="warning" className="hidden sm:inline-flex">
@@ -357,7 +359,7 @@ export default function TableQRPage() {
               onClick={handleCallWaiter}
               disabled={busy}
               variant="outline"
-              className="h-auto rounded-xl border-rose-500/20 bg-rose-500/10 py-3 text-rose-300 hover:bg-rose-500/15 hover:text-rose-200"
+              className="h-auto rounded-xl border-rose-500/20 bg-rose-500/10 py-3 text-rose-700 hover:bg-rose-500/15 hover:text-rose-200"
             >
               <Bell className="mr-1.5 h-4 w-4" /> {t('callWaiter')}
             </Button>
@@ -366,7 +368,7 @@ export default function TableQRPage() {
               onClick={handleRequestBill}
               disabled={busy}
               variant="outline"
-              className="h-auto rounded-xl border-[#F59E0B]/30 bg-[#F59E0B]/10 py-3 text-[#F59E0B] hover:bg-[#F59E0B]/15"
+              className="h-auto rounded-xl border-[#F59E0B]/30 bg-[#F59E0B]/10 py-3 text-[#B45309] hover:bg-[#F59E0B]/15"
             >
               <Receipt className="mr-1.5 h-4 w-4" /> {t('requestBill')}
             </Button>
@@ -374,7 +376,7 @@ export default function TableQRPage() {
         </div>
       </header>
 
-      <nav className="sticky top-0 z-30 border-b border-white/5 bg-[#0F1015]/95 backdrop-blur-md">
+      <nav className="sticky top-0 z-30 border-b border-slate-200 bg-[#F6F7F9]/95 backdrop-blur-md">
         <div className="mx-auto grid max-w-xl grid-cols-4 gap-1.5 px-4 py-2.5">
           {[
             { id: 'menu' as View, label: t('menu'), icon: Utensils },
@@ -396,8 +398,8 @@ export default function TableQRPage() {
                 onClick={() => setActiveView(tab.id)}
                 className={`relative flex flex-col items-center gap-1 rounded-xl px-2 py-2 text-[10px] font-bold transition ${
                   selected
-                    ? 'bg-[#F59E0B]/15 text-[#F59E0B] ring-1 ring-[#F59E0B]/40'
-                    : 'text-[#94A3B8] hover:bg-white/5 hover:text-[#F8FAFC]'
+                    ? 'bg-[#F59E0B]/15 text-[#B45309] ring-1 ring-[#F59E0B]/40'
+                    : 'text-[#64748B] hover:bg-slate-100 hover:text-[#0F172A]'
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -415,12 +417,12 @@ export default function TableQRPage() {
 
       {feedback && (
         <div className="mx-auto mt-3 max-w-xl px-4">
-          <div className="flex items-center justify-between rounded-xl border border-[#F59E0B]/40 bg-[#F59E0B]/10 px-3.5 py-3 text-xs font-bold text-[#F59E0B]">
+          <div className="flex items-center justify-between rounded-xl border border-[#F59E0B]/40 bg-[#F59E0B]/10 px-3.5 py-3 text-xs font-bold text-[#B45309]">
             <span>{feedback}</span>
             <button
               type="button"
               onClick={() => setFeedback('')}
-              className="ml-2 text-[#F59E0B] hover:text-[#F8FAFC]"
+              className="ml-2 text-[#B45309] hover:text-[#0F172A]"
             >
               ✕
             </button>
@@ -431,9 +433,9 @@ export default function TableQRPage() {
       <main className="mx-auto mt-3 max-w-xl px-4">
         {activeView === 'orders' && (
           <div className="space-y-2">
-            <div className="flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+            <div className="flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
               <span className="flex items-center gap-1.5">
-                <Radio className="h-3 w-3 animate-pulse text-emerald-400" /> Live table status
+                <Radio className="h-3 w-3 animate-pulse text-emerald-600" /> Live table status
               </span>
               <span>
                 {table?.status === 'bill_requested'
@@ -457,12 +459,12 @@ export default function TableQRPage() {
           <div className="space-y-3">
             <div className="flex gap-2">
               <div className="relative flex-1">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#94A3B8]" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#64748B]" />
                 <Input
                   placeholder={`${t('search')}…`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="rounded-xl border-white/10 bg-[#171821] pl-9 text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#F59E0B]"
+                  className="rounded-xl border-slate-200 bg-[#FFFFFF] pl-9 text-xs text-[#0F172A] placeholder-[#94A3B8] focus:border-[#F59E0B]"
                 />
               </div>
             </div>
@@ -484,29 +486,39 @@ export default function TableQRPage() {
             </div>
 
             {loading ? (
-              <div className="space-y-3">
+              <div role="status" aria-label="Loading menu" className="space-y-2.5">
                 {Array.from({ length: 5 }).map((_, index) => (
                   <div
                     key={index}
-                    className="h-24 animate-pulse rounded-2xl border border-white/5 bg-[#171821]"
-                  />
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-[#FFFFFF] p-4"
+                  >
+                    <div className="min-w-0 flex-1 space-y-2">
+                      <Skeleton className="h-4 w-2/3" />
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
+                    <Skeleton className="h-9 w-16 shrink-0 rounded-full" />
+                  </div>
                 ))}
               </div>
             ) : filteredItems.length === 0 ? (
-              <div className="rounded-2xl border border-white/5 bg-[#171821] p-10 text-center">
-                <span className="text-4xl">🍽️</span>
-                <p className="mt-3 text-sm font-bold text-[#F8FAFC]">Nothing matches your filter</p>
-                <Button
-                  variant="outline"
-                  className="mt-3 border-white/10"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setActiveCategory('all');
-                  }}
-                >
-                  {t('all')}
-                </Button>
-              </div>
+              <EmptyState
+                icon={UtensilsCrossed}
+                title="Nothing matches your filter"
+                description="Try another category or clear your search to see the full menu."
+                action={
+                  <Button
+                    variant="outline"
+                    className="border-slate-200"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setActiveCategory('all');
+                    }}
+                  >
+                    {t('all')}
+                  </Button>
+                }
+              />
             ) : (
               <div className="space-y-2.5">
                 {filteredItems.map((item) => (
@@ -570,7 +582,7 @@ function FilterPill({
       className={`shrink-0 whitespace-nowrap rounded-xl px-3.5 py-1.5 text-[11px] font-bold transition ${
         active
           ? 'bg-[#F59E0B] text-[#0F1015]'
-          : 'border border-white/5 bg-[#171821] text-[#94A3B8] hover:text-[#F8FAFC]'
+          : 'border border-slate-200 bg-[#FFFFFF] text-[#64748B] hover:text-[#0F172A]'
       }`}
     >
       {label}

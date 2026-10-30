@@ -34,33 +34,33 @@ export function StoreNavbar({
   getText,
 }: StoreNavbarProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-[#14151D]/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
+    <header className="sticky top-0 z-40 h-[68px] border-b border-slate-200 bg-[#FFFFFF]/90 backdrop-blur-md">
+      <div className="mx-auto flex h-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F59E0B] text-[#0F1015] shadow-sm transition group-hover:scale-105">
+        <Link href="/" className="group flex min-w-0 items-center gap-2.5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F59E0B] text-[#0F1015] shadow-sm transition group-hover:scale-105">
             <UtensilsCrossed className="h-5 w-5 stroke-[2.2]" />
           </div>
-          <div>
-            <h1 className="text-base font-extrabold tracking-tight text-[#F8FAFC] sm:text-lg">
+          <div className="min-w-0">
+            <h1 className="truncate text-base font-extrabold tracking-tight text-[#0F172A] sm:text-lg">
               {getText(settings?.name) || 'X-RESTORANT'}
             </h1>
-            <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#F59E0B]">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-              Fine Dining & Delivery
+            <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#B45309]">
+              <span className="h-1.5 w-1.5 shrink-0 animate-ping rounded-full bg-emerald-400" />
+              <span className="truncate">Fine Dining &amp; Delivery</span>
             </span>
           </div>
         </Link>
 
         {/* Center Category Nav Tabs */}
-        <nav className="hidden md:flex items-center gap-6 text-xs font-bold tracking-wider uppercase">
+        <nav className="hidden items-center gap-4 text-xs font-bold uppercase tracking-wider lg:flex xl:gap-6">
           <button
             type="button"
             onClick={() => onSelectCategory('all')}
             className={`transition pb-1 ${
               activeCategory === 'all' && !fastingOnly
-                ? 'text-[#F59E0B] border-b-2 border-[#F59E0B] font-extrabold'
-                : 'text-[#94A3B8] hover:text-[#F8FAFC]'
+                ? 'text-[#B45309] border-b-2 border-[#F59E0B] font-extrabold'
+                : 'text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
             PROMOTIONS
@@ -70,10 +70,10 @@ export function StoreNavbar({
               key={c._id}
               type="button"
               onClick={() => onSelectCategory(c._id)}
-              className={`transition pb-1 ${
+              className={`max-w-[9rem] truncate transition pb-1 ${
                 activeCategory === c._id && !fastingOnly
-                  ? 'text-[#F59E0B] border-b-2 border-[#F59E0B] font-extrabold'
-                  : 'text-[#94A3B8] hover:text-[#F8FAFC]'
+                  ? 'text-[#B45309] border-b-2 border-[#F59E0B] font-extrabold'
+                  : 'text-[#64748B] hover:text-[#0F172A]'
               }`}
             >
               {getText(c.name)}
@@ -84,8 +84,8 @@ export function StoreNavbar({
             onClick={onToggleFasting}
             className={`transition pb-1 ${
               fastingOnly
-                ? 'text-emerald-400 border-b-2 border-emerald-400 font-extrabold'
-                : 'text-[#94A3B8] hover:text-[#F8FAFC]'
+                ? 'text-emerald-600 border-b-2 border-emerald-400 font-extrabold'
+                : 'text-[#64748B] hover:text-[#0F172A]'
             }`}
           >
             የጾም (VEGAN)
@@ -93,16 +93,18 @@ export function StoreNavbar({
         </nav>
 
         {/* Right Action Icons */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={onToggleLanguage}
-            className="border-white/10 bg-[#1A1B24] text-xs font-bold text-[#CBD5E1] hover:border-[#F59E0B] hover:text-[#F8FAFC]"
+            aria-label="Switch language"
+            className="border-slate-200 bg-[#F1F5F9] px-1.5 text-xs font-bold text-[#334155] hover:border-[#F59E0B] hover:text-[#0F172A] sm:px-3"
           >
-            <Globe className="mr-1.5 h-3.5 w-3.5 text-[#F59E0B]" />
-            <span>{language === 'en' ? 'አማርኛ' : 'EN'}</span>
+            <Globe className="h-3.5 w-3.5 text-[#B45309] sm:mr-1.5" />
+            <span className="hidden sm:inline">{language === 'en' ? 'አማርኛ' : 'EN'}</span>
+            <span className="sm:hidden">{language === 'en' ? 'አ' : 'EN'}</span>
           </Button>
 
           <Link href="/login">
@@ -110,9 +112,10 @@ export function StoreNavbar({
               type="button"
               variant="outline"
               size="sm"
-              className="border-white/10 bg-[#1A1B24] text-xs font-bold text-[#CBD5E1] hover:border-[#F59E0B] hover:text-[#F8FAFC]"
+              aria-label="Staff portal"
+              className="border-slate-200 bg-[#F1F5F9] px-2 text-xs font-bold text-[#334155] hover:border-[#F59E0B] hover:text-[#0F172A] sm:px-3"
             >
-              <Lock className="mr-1.5 h-3.5 w-3.5 text-[#F59E0B]" />
+              <Lock className="h-3.5 w-3.5 text-[#B45309] sm:mr-1.5" />
               <span className="hidden sm:inline">Staff Portal</span>
             </Button>
           </Link>
@@ -123,10 +126,11 @@ export function StoreNavbar({
               variant="outline"
               size="icon"
               onClick={onOpenCheckout}
-              className="relative border-[#F59E0B] bg-[#F59E0B]/10 text-[#F59E0B] hover:bg-[#F59E0B]/20"
+              aria-label={`Open cart, ${totalCount} items`}
+              className="relative h-8 w-8 border-[#F59E0B] bg-[#F59E0B]/10 text-[#B45309] hover:bg-[#F59E0B]/20"
             >
               <ShoppingBag className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#F59E0B] text-[10px] font-black text-[#0F1015]">
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#F59E0B] text-[10px] font-black text-[#0F1015]">
                 {totalCount}
               </span>
             </Button>

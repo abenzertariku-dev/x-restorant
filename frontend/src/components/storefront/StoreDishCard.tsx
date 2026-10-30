@@ -21,9 +21,9 @@ export function StoreDishCard({
   getText,
 }: StoreDishCardProps) {
   return (
-    <Card className="group flex flex-col justify-between overflow-hidden rounded-2xl border-white/5 bg-[#171821] p-5 shadow-sm transition duration-150 hover:-translate-y-0.5 hover:border-[#F59E0B]/40">
+    <Card className="group flex flex-col justify-between overflow-hidden rounded-2xl border-slate-200 bg-[#FFFFFF] p-5 shadow-sm transition duration-150 hover:-translate-y-0.5 hover:border-[#F59E0B]/40">
       <div>
-        <div className="relative mb-4 flex h-44 w-full items-center justify-center overflow-hidden rounded-xl bg-[#14151D]">
+        <div className="relative mb-4 flex h-40 w-full items-center justify-center overflow-hidden rounded-xl bg-[#FFFFFF] sm:h-44">
           {item.imageUrl ? (
             <img
               src={item.imageUrl}
@@ -33,22 +33,22 @@ export function StoreDishCard({
           ) : (
             <div className="flex flex-col items-center justify-center text-center">
               <span className="text-5xl">🍔</span>
-              <span className="mt-2 text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
+              <span className="mt-2 text-[10px] font-bold uppercase tracking-wider text-[#94A3B8]">
                 Fresh Preparation
               </span>
             </div>
           )}
 
-          <div className="absolute bottom-2.5 right-2.5 rounded-md bg-[#0F1015]/90 px-3 py-1 text-xs font-black text-[#F59E0B] border border-white/10 backdrop-blur-sm">
+          <div className="absolute bottom-2.5 right-2.5 rounded-md bg-[#F6F7F9]/90 px-3 py-1 text-xs font-black text-[#B45309] border border-slate-200 backdrop-blur-sm">
             {item.price} ETB
           </div>
         </div>
 
-        <h3 className="text-base font-extrabold text-[#F8FAFC] group-hover:text-[#F59E0B] transition">
+        <h3 className="line-clamp-1 text-base font-extrabold text-[#0F172A] transition group-hover:text-[#B45309]">
           {getText(item.name)}
         </h3>
 
-        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#94A3B8]">
+        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#64748B]">
           {getText(item.description)}
         </p>
 
@@ -56,7 +56,7 @@ export function StoreDishCard({
           {item.isFasting && (
             <Badge
               variant="outline"
-              className="flex items-center gap-1 border-emerald-500/20 bg-emerald-500/10 text-emerald-400 text-[10px]"
+              className="flex items-center gap-1 border-emerald-500/20 bg-emerald-500/10 text-emerald-600 text-[10px]"
             >
               <Leaf className="h-3 w-3" /> የጾም (Vegan)
             </Badge>
@@ -64,7 +64,7 @@ export function StoreDishCard({
           {item.spiceLevel !== 'None' && (
             <Badge
               variant="outline"
-              className="flex items-center gap-1 border-rose-500/20 bg-rose-500/10 text-rose-400 text-[10px]"
+              className="flex items-center gap-1 border-rose-500/20 bg-rose-500/10 text-rose-600 text-[10px]"
             >
               <Flame className="h-3 w-3" /> {item.spiceLevel}
             </Badge>
@@ -72,8 +72,8 @@ export function StoreDishCard({
         </div>
       </div>
 
-      <div className="mt-5 flex items-center justify-between border-t border-white/5 pt-3.5">
-        <span className="text-[11px] font-bold text-[#64748B]">
+      <div className="mt-5 flex items-center justify-between border-t border-slate-200 pt-3.5">
+        <span className="text-[11px] font-bold text-[#94A3B8]">
           {item.isAvailable ? 'Available Now' : 'Out of Stock'}
         </span>
 
@@ -85,18 +85,20 @@ export function StoreDishCard({
                 size="icon"
                 variant="secondary"
                 onClick={() => onUpdateQuantity(-1)}
-                className="h-7 w-7 rounded-full bg-[#1A1B24] text-[#F8FAFC] hover:bg-[#242634] active:scale-90"
+                aria-label={`Remove one ${getText(item.name)}`}
+                className="h-8 w-8 rounded-full bg-[#F1F5F9] text-[#0F172A] hover:bg-[#E2E8F0] active:scale-90 sm:h-7 sm:w-7"
               >
                 <Minus className="h-3.5 w-3.5" />
               </Button>
-              <span className="w-4 text-center text-xs font-black text-[#F59E0B]">
+              <span className="w-4 text-center text-xs font-black text-[#B45309]">
                 {quantity}
               </span>
               <Button
                 type="button"
                 size="icon"
                 onClick={() => onUpdateQuantity(1)}
-                className="h-7 w-7 rounded-full bg-[#F59E0B] text-[#0F1015] hover:bg-[#D97706] active:scale-90 shadow-sm"
+                aria-label={`Add one ${getText(item.name)}`}
+                className="h-8 w-8 rounded-full bg-[#F59E0B] text-[#0F1015] shadow-sm hover:bg-[#D97706] active:scale-90 sm:h-7 sm:w-7"
               >
                 <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
               </Button>
@@ -113,7 +115,7 @@ export function StoreDishCard({
             </Button>
           )
         ) : (
-          <span className="text-xs font-bold text-[#64748B]">Unavailable</span>
+          <span className="text-xs font-bold text-[#94A3B8]">Unavailable</span>
         )}
       </div>
     </Card>

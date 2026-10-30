@@ -20,32 +20,32 @@ export function ReceiptModal({ order, settings, onClose }: ReceiptModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md no-print">
-      <div className="receipt-print w-full max-w-sm rounded-2xl border border-white/10 bg-[#14151D] p-6 text-[#F8FAFC] shadow-2xl">
-        <div className="border-b border-dashed border-white/10 pb-3 text-center">
-          <h3 className="text-lg font-black uppercase text-[#F8FAFC]">{name}</h3>
-          <p className="receipt-muted text-[11px] text-[#94A3B8]">
+      <div className="receipt-print w-full max-w-sm rounded-2xl border border-slate-200 bg-[#FFFFFF] p-6 text-[#0F172A] shadow-2xl">
+        <div className="border-b border-dashed border-slate-200 pb-3 text-center">
+          <h3 className="text-lg font-black uppercase text-[#0F172A]">{name}</h3>
+          <p className="receipt-muted text-[11px] text-[#64748B]">
             Addis Ababa, Ethiopia · TIN: 0048921098
           </p>
-          <p className="receipt-accent mt-1 text-xs font-black tracking-wide text-emerald-400">
+          <p className="receipt-accent mt-1 text-xs font-black tracking-wide text-emerald-600">
             OFFICIAL FISCAL RECEIPT / ደረሰኝ
           </p>
         </div>
 
         <div className="my-3 space-y-1 text-[11px]">
           <div className="flex justify-between">
-            <span className="receipt-muted text-[#94A3B8]">Receipt #</span>
+            <span className="receipt-muted text-[#64748B]">Receipt #</span>
             <span className="font-mono font-bold">REC-{order.orderNumber}</span>
           </div>
           <div className="flex justify-between">
-            <span className="receipt-muted text-[#94A3B8]">Order</span>
+            <span className="receipt-muted text-[#64748B]">Order</span>
             <span className="font-mono font-bold">#{order.orderNumber}</span>
           </div>
           <div className="flex justify-between">
-            <span className="receipt-muted text-[#94A3B8]">Date</span>
+            <span className="receipt-muted text-[#64748B]">Date</span>
             <span className="font-bold">{formatDateTime(order.createdAt)}</span>
           </div>
           <div className="flex justify-between">
-            <span className="receipt-muted text-[#94A3B8]">Service</span>
+            <span className="receipt-muted text-[#64748B]">Service</span>
             <span className="font-bold capitalize">
               {order.type === 'dine_in'
                 ? `Table ${order.tableNumber}`
@@ -53,29 +53,29 @@ export function ReceiptModal({ order, settings, onClose }: ReceiptModalProps) {
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="receipt-muted text-[#94A3B8]">Guest</span>
+            <span className="receipt-muted text-[#64748B]">Guest</span>
             <span className="font-bold">{order.customer?.name || 'Walk-in guest'}</span>
           </div>
           <div className="flex justify-between">
-            <span className="receipt-muted text-[#94A3B8]">Payment</span>
+            <span className="receipt-muted text-[#64748B]">Payment</span>
             <span className="font-bold uppercase">
               {splits.length ? `Split (${splits.length})` : paymentLabel(order.payment?.method)}
             </span>
           </div>
           {order.payment?.referenceCode && (
             <div className="flex justify-between">
-              <span className="receipt-muted text-[#94A3B8]">Ref code</span>
-              <span className="font-mono font-bold text-[#F59E0B]">
+              <span className="receipt-muted text-[#64748B]">Ref code</span>
+              <span className="font-mono font-bold text-[#B45309]">
                 {order.payment.referenceCode}
               </span>
             </div>
           )}
         </div>
 
-        <div className="my-2 space-y-1.5 border-y border-dashed border-white/10 py-2.5">
+        <div className="my-2 space-y-1.5 border-y border-dashed border-slate-200 py-2.5">
           {order.items.map((item, index) => (
             <div key={`${item.menuItem}-${index}`} className="flex justify-between gap-2 text-[11px]">
-              <span className="text-[#CBD5E1]">
+              <span className="text-[#334155]">
                 {item.qty}× {item.name.en}
               </span>
               <span className="font-mono font-bold">{formatETB(item.price * item.qty)}</span>
@@ -84,11 +84,11 @@ export function ReceiptModal({ order, settings, onClose }: ReceiptModalProps) {
         </div>
 
         {splits.length > 0 && (
-          <div className="my-2 space-y-1 border-b border-dashed border-white/10 pb-2.5 text-[10px]">
-            <p className="receipt-muted font-bold uppercase text-[#94A3B8]">Split settlement</p>
+          <div className="my-2 space-y-1 border-b border-dashed border-slate-200 pb-2.5 text-[10px]">
+            <p className="receipt-muted font-bold uppercase text-[#64748B]">Split settlement</p>
             {splits.map((split, index) => (
               <div key={index} className="flex justify-between gap-2">
-                <span className="text-[#CBD5E1]">
+                <span className="text-[#334155]">
                   {split.guestName || `Guest ${index + 1}`} · {paymentLabel(split.method)}
                   {split.referenceCode ? ` · ${split.referenceCode}` : ''}
                 </span>
@@ -100,12 +100,12 @@ export function ReceiptModal({ order, settings, onClose }: ReceiptModalProps) {
 
         <div className="flex items-center justify-between py-2 text-base font-black">
           <span>TOTAL PAID</span>
-          <span className="receipt-accent font-mono text-lg text-emerald-400">
+          <span className="receipt-accent font-mono text-lg text-emerald-600">
             {formatETB(order.totalAmount)}
           </span>
         </div>
 
-        <p className="receipt-muted mt-1 text-center text-[10px] text-[#64748B]">
+        <p className="receipt-muted mt-1 text-center text-[10px] text-[#94A3B8]">
           Thank you for dining with us · እንኳን ደህና መጡ
         </p>
 

@@ -7,19 +7,20 @@
   --color-primary-soft: rgba(245, 158, 11, 0.15);
   --color-primary-foreground: #0F1015;
 
-  /* Modern "Not Too Black" Palette (Obsidian Graphite & Rich Slate) */
-  --color-background: #101116;
-  --color-surface: #171821;
-  --color-surface-elevated: #1E202B;
-  --color-surface-hover: #242634;
+  /* Light" Palette (Warm Slate & Soft Paper) */
+  color-scheme: light;
+  --color-background: #F6F7F9;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #F1F5F9;
+  --color-surface-hover: #E2E8F0;
 
   /* Typography */
-  --color-heading: #F8FAFC;
-  --color-text: #CBD5E1;
-  --color-muted: #94A3B8;
+  --color-heading: #0F172A;
+  --color-text: #334155;
+  --color-muted: #64748B;
 
   /* Borders */
-  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(15, 23, 42, 0.08);
   --color-border-active: rgba(245, 158, 11, 0.35);
 
   /* Status */
@@ -35,10 +36,39 @@
 
 html,
 body {
-  background-color: #101116;
-  color: #CBD5E1;
+  background-color: #F6F7F9;
+  color: #334155;
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent iOS from zooming in on focused form controls. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Keep sticky headers and anchored content clear of the mobile safe area. */
+.safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.safe-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
 }
 
 ::selection {
@@ -46,11 +76,11 @@ body {
   color: #0F1015;
 }
 
-/* Custom Utilities for Modern Obsidian Dark Theme */
+/* Custom Utilities for the Light Theme */
 .dark-panel {
-  background: #171821;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  background: #FFFFFF;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 20px -6px rgba(15, 23, 42, 0.12);
 }
 
 .dark-panel-hover {
@@ -58,10 +88,10 @@ body {
 }
 
 .dark-panel-hover:hover {
-  background: #1D1E2A;
+  background: #F1F5F9;
   border-color: rgba(245, 158, 11, 0.35);
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.6), 0 0 15px rgba(245, 158, 11, 0.1);
+  box-shadow: 0 8px 30px -8px rgba(15, 23, 42, 0.18), 0 0 15px rgba(245, 158, 11, 0.12);
 }
 
 .btn-amber-glow {
@@ -82,7 +112,7 @@ body {
   transform: scale(0.98);
 }
 
-/* Thin dark scrollbars */
+/* Thin light scrollbars */
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(245, 158, 11, 0.35) transparent;
@@ -119,6 +149,20 @@ body {
 
 .animate-soft-rise {
   animation: soft-rise 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Fiscal receipt printing */
